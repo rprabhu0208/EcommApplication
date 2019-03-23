@@ -1,36 +1,36 @@
-﻿@model ECommApplication.Models.Category
+﻿@model ECommApplication.Models.SubCategory
 @{
-    /**/
-
-    ViewBag.Title = "Category";
-}
+    ViewBag.Title = "SubCategory";
+} 
 <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
     function clearRecord() {
         $('#CategoryID').val('')
-        $('#CategoryName').val('')
+        $('#SubCategoryID').val('')
+        $('#SubCategoryName').val('')
         $('#IsActive').val('')
         $('#btnSave').text('Save').addClass('btn-success').removeClass('btn-warning');
     }
-    function editCategory(e, categoryId) {
-        e.preventDefault(); 
+    function editSubCategory(e, categoryId) {
+        e.preventDefault();
         $.ajax({
-            url: "/Admin/Category",
+            url: "/Admin/SubCategory",
             type: "Get",
-            data: { 'CategoryId' :  categoryId },
+            data: { 'SubCategoryId': categoryId },
             datatype: "json",
-            success: function (data) { 
+            success: function (data) {
                 console.log(data)
-                var category = data.data;
-                $('#CategoryID').val(category.CategoryID)
-                $('#CategoryName').val(category.CategoryName)
-                $('#IsActive').val(category.IsActive)
+                var subCategory = data.data;
+                $('#CategoryID').val(subCategory.category.CategoryID)
+                $('#SubCategoryID').val(subCategory.SubCategoryID)
+                $('#SubCategoryName').val(subCategory.SubCategoryName)
+                $('#IsActive').val(subCategory.IsActive)
                 $('#btnSave').text('Update').removeClass('btn-success').addClass('btn-warning')
-            } 
+            }
         });
     }
 
-    function deleteCategory(e, categoryId) {
+    function deleteSubCategory(e, categoryId) {
         e.preventDefault();
         var getConfirmation = confirm("Do you want to remove this record ?")
         if (getConfirmation) {
@@ -42,10 +42,10 @@
                 success: function (data) {
                     console.log(data)
                     var category = data.data;
-                    $('#CategoryID').val(category.CategoryID)
-                    $('#CategoryName').val(category.CategoryName)
-                    $('#IsActive').val(category.IsActive)
-                    $('#btnSave').text('Update').removeClass('btn-success').addClass('btn-warning')
+                    //$('#CategoryID').val(category.CategoryID)
+                    //$('#CategoryName').val(category.CategoryName)
+                    //$('#IsActive').val(category.IsActive)
+                    //$('#btnSave').text('Update').removeClass('btn-success').addClass('btn-warning')
                 },
             });
         }
@@ -54,38 +54,37 @@
     $(document).ready(function () {
         var categoryData = "";
         var category = null;
-        clearRecord();
+        //clearRecord();
         $.ajax({
-            url: "/BindDataTable/BindCategory",
+            url: "/BindDataTable/BindSubCategory",
             type: "POST",
             datatype: "json",
             success: function (data) {
-
                 categoryData = data;
                 loadDataTable();
             },
         });
-        
+
         function loadDataTable() {
             $('#tblCategory').DataTable({
                 "ordering": true,
                 "bJQueryUI": true,
                 "sPaginationType": "full_numbers",
                 "sDom": '<""l>t<"F"fp>',
-                "data": categoryData.category,
+                "data": categoryData.subcategory,
                 "searching": true,
                 "columns": [
-                    { 'data': 'CategoryID', "name": "CategoryID" },
-                    { 'data': 'CategoryName', "name": "CategoryName" },
-                    { 'data': 'IsActive', "name": "IsActive" }, 
+                    { 'data': 'SubCategoryID', "name": "SubCategoryID" },
+                    { 'data': 'category.CategoryName', "name": "CategoryName" },
+                    { 'data': 'SubCategoryName', "name": "SubCategoryName" },
+                    { 'data': 'IsActive', "name": "IsActive" },
                     {
-                        "render": function (data, type, obj, meta)
-                        { 
-                            return `<a class="btn btn-primary" href="#" onclick="javascript:editCategory(event,'` + obj.CategoryID + `')">Edit</a>
-                            <a class="btn btn-danger" href="#" onclick="javascript:deleteCategory(event,'` + obj.CategoryID +`')">Delete</a>
+                        "render": function (data, type, obj, meta) {
+                            return `<a class="btn btn-primary" href="#" onclick="javascript:editSubCategory(event,'` + obj.SubCategoryID + `')">Edit</a>
+                            <a class="btn btn-danger" href="#" onclick="javascript:deleteCategory(event,'` + obj.SubCategoryID + `')">Delete</a>
                             `;
                         }
-                    },  
+                    },
                 ]
 
             });
@@ -94,7 +93,7 @@
 </script>
 <div id="content-header">
     <div id="breadcrumb"> <a href="index.html" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> Home</a> <a href="#" class="tip-bottom">Form elements</a> <a href="#" class="current">Common elements</a> </div>
-  
+
 </div>
 <div class="container-fluid">
     <hr>
@@ -103,19 +102,26 @@
             <div class="widget-box">
                 <div class="widget-title">
                     <span class="icon"> <i class="icon-align-justify"></i> </span>
-                    <h5>Category-info</h5>
+                    <h5>Sub-Category-info</h5>
                 </div>
                 <div class="widget-content nopadding">
 
-                    <form action="/Admin/Category" method="post" class="form-horizontal">
-                         
+                    <form action="/Admin/SubCategory" method="post" class="form-horizontal">
                         @Html.AntiForgeryToken()
                         <div class="control-group">
                             <label class="control-label">Category Name :</label>
                             <div class="controls">
-                                @Html.HiddenFor(a => a.CategoryID)
-                                @Html.TextBoxFor(a => a.CategoryName, new { @maxlength = "100" })
-                                @Html.ValidationMessageFor(a => a.CategoryName,"", new { @class = "help-inline" })
+                                @Html.DropDownListFor(a => a.CategoryID, new SelectList((new ECommApplication.Models.SubCategory().getCategories()), "CategoryID", "CategoryName"), "--Select--")
+                                @Html.ValidationMessageFor(a => a.CategoryID, "", new { @class = "help-inline" })
+                            </div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <label class="control-label">Sub Category Name :</label>
+                            <div class="controls">
+                                @Html.HiddenFor(a => a.SubCategoryID)
+                                @Html.TextBoxFor(a => a.SubCategoryName, new { @maxlength = "100" })
+                                @Html.ValidationMessageFor(a => a.SubCategoryName, "", new { @class = "help-inline" })
                             </div>
                         </div>
                         <div class="control-group">
@@ -132,9 +138,9 @@
                     </form>
                 </div>
             </div>
-            
-        </div> 
+
         </div>
+    </div>
     <hr />
     <div class="row-fluid">
         <div class="span12">
@@ -147,9 +153,10 @@
                     <table class="table table-bordered data-table" id="tblCategory">
                         <thead>
                             <tr>
-                                <th>Category ID</th>
+                                <th>Sub Category ID</th>
                                 <th>Category Name</th>
-                                <th>Active</th> 
+                                <th>SubCategory Name</th>
+                                <th>Active</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -158,8 +165,4 @@
             </div>
         </div>
     </div>
-    </div>
-
-
-
- 
+</div>

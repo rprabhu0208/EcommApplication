@@ -44,8 +44,12 @@ namespace ECommApplication.Controllers
         [ValidateAntiForgeryToken] 
         public ActionResult Category(Category CA)
         {
-            int i = OC.Category(CA);
-            return View();
+            if(ModelState.IsValid)
+            {
+                int i = OC.Category(CA);
+            }
+            
+            return View(CA);
         }
 
         [HttpPost]
@@ -64,17 +68,64 @@ namespace ECommApplication.Controllers
             return View();
         }
 
+        #endregion
 
+        #region Sub Category
 
+        [HttpGet]
+        public ActionResult SubCategory(string id)
+        {
+            SubCategory subCategory = null;
+            if (Request.IsAjaxRequest())
+            {
+                if (Request.QueryString["SubCategoryId"] != null)
+                {
+                    subCategory = OC.GetSubCategory(Convert.ToInt32(Request.QueryString["SubCategoryId"]));
+                    return Json(new { data = subCategory }, JsonRequestBehavior.AllowGet);
+                }
+            }
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult SubCategory(SubCategory SC)
+        {
+            if (ModelState.IsValid)
+            {
+                int i = OC.SubCategory(SC);
+                
+            }
+            return View(SC);
+        }
+
+        [HttpPost]
+        public ActionResult DeleteSubCategory(string categoryId)
+        {
+
+            if (Request.IsAjaxRequest())
+            {
+                if (Request.QueryString["CategoryId"] != null)
+                {
+                    int i = OC.DeleteCategory(Convert.ToInt32(Request.QueryString["CategoryId"]));
+                    return Json(new { data = "success" }, JsonRequestBehavior.AllowGet);
+                }
+            }
+
+            return View();
+        }
+
+        #endregion
         public ActionResult DashBoard()
         {
             return View();
         }
+
         public ActionResult Test()
         {
             return View();
         }
-        #endregion
-         
+
     }
 }
