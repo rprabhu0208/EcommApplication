@@ -8,9 +8,9 @@ namespace ECommApplication.Models
 {
     public class Category
     {
+        
         public int CategoryID { get; set; }   
-        public bool IsActive { get; set; }
-        public int ParentID { get; set; }
+        public bool IsActive { get; set; } 
         //[Required(ErrorMessage = "Please Enter Category Name")]
         //[DataType(DataType.Text)]
         //[RegularExpression(@"^[0-9a-zA-Z ]+$", ErrorMessage = "Special Characters Are Not Allowed !!")]

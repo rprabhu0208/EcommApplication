@@ -1,0 +1,141 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Test</title>
+    <script src="~/Content/AdminLayout/js/jquery.min.js"></script>
+    <link href="//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function () {
+        //$('#tblCategory').dataTable({
+        //            "bProcessing": true,
+        //            "bServerSide": true,
+        //            "sAjaxSource": "/BindDataTable/BindCategory",
+        //            "fnServerData": function (sSource, fnCallback, oSettings) {
+		      //    oSettings.jqXHR = $.ajax({
+        //            "dataType": 'json',
+        //            "type": "POST",
+        //            "url": sSource,
+        //              "success": function (data) {
+        //                  console.log(data)
+        //              }
+		      //             });
+		      //   }
+		      // });
+        var categoryData = "";
+        $.ajax({
+            url: "/BindDataTable/BindCategory",
+            type: "POST",
+            datatype: "json",
+            success: function (data) { 
+                categoryData = data;
+                loadDataTable();
+            },
+        });
+
+        function loadDataTable() {
+            $('#tblCategory').DataTable({
+            "ordering": true,
+            "data": categoryData.category,
+            "searching": false,
+            "columns": [
+                { 'data': 'CategoryID', "name": "CategoryID"},
+                { 'data': 'IsActive', "name": "IsActive" },
+                {
+                    'data': 'CategoryName', "name": "CategoryName"
+                }
+            ]
+
+        });
+        }
+        //var myObj = {
+        //    "data": [{ "CategoryID": 1, "IsActive": true, "CategoryName": "Test" },
+        //        { "CategoryID": 2, "IsActive": true, "CategoryName": "Test 1223" },
+        //        { "CategoryID": 3, "IsActive": false, "CategoryName": "Test 1223rwer" }]
+        //};
+        //var myObj = {
+        //    "category": [
+        //        {
+        //            "CategoryID": 1,
+        //            "IsActive": true,
+        //            "CategoryName": "Test"
+        //        },
+        //        {
+        //            "CategoryID": 2,
+        //            "IsActive": true,
+        //            "CategoryName": "Test 1223"
+        //        },
+        //        {
+        //            "CategoryID": 3,
+        //            "IsActive": false,
+        //            "CategoryName": "Test 1223rwer"
+        //        }
+        //    ]
+        //}
+        //console.log(myObj.category)
+        //var data = [myObj];
+        //alert(data)
+        //$('#tblCategory').DataTable({
+        //    "ordering": true,
+        //    "data": myObj.category,
+        //    "searching": false,
+        //    "columns": [
+        //        { 'data': 'CategoryID', "name": "CategoryID"},
+        //        { 'data': 'IsActive', "name": "IsActive" },
+        //        {
+        //            'data': 'CategoryName', "name": "CategoryName"
+        //        }
+        //    ]
+
+        //});
+        //$('#tblCategory').dataTable({
+        //    "ajax": {
+        //        "url": "/BindDataTable/BindCategory",
+        //        "type": "POST",
+        //        //"processing": true, // for show progress bar  
+        //        //"serverSide": true,
+        //        //"dataSrc":"category",
+        //        "dataSrc": function (response) {
+        //            var obj = response.category;
+        //            //if (response.status == false) {
+        //            //    alert(response.msg);
+        //            //    return [];
+        //            //}
+        //            return obj;
+        //        },
+        //        //"success": function (response) {
+        //        //   console.log(response)
+
+        //        //},
+        //        "columns": [
+        //            { "category": "CategoryID"},
+        //            { "category": "IsActive" },
+        //            { "category": "CategoryName"}
+        //        ]
+
+        //    }
+        //});
+    });
+    </script>
+</head>
+<body>
+    <div>
+        <table class="table table-bordered data-table" id="tblCategory">
+            <thead>
+                <tr>
+                    <th>Category ID</th>
+                    <th>Active</th>
+                    <th>Category Name</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</body>
+</html>

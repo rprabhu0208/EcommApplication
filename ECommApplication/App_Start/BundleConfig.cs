@@ -43,6 +43,7 @@ namespace ECommApplication
 
             bundles.Add(new ScriptBundle("~/bundles/adminlayout/js").Include(
                         "~/Content/adminlayout/js/jquery.min.js",
+                       // "~/Content/adminlayout/js/jquery.dataTables.min.js",
                         //"~/Content/adminlayout/js/jquery.ui.custom.js",
                         "~/Content/adminlayout/js/bootstrap.min.js",
                         "~/Content/adminlayout/js/bootstrap-colorpicker.js",
@@ -52,10 +53,10 @@ namespace ECommApplication
 
                         "~/Content/adminlayout/js/jquery.uniform.js",
                         "~/Content/adminlayout/js/select2.min.js",
-                        "~/Content/adminlayout/js/matrix.js",
-                        "~/Content/adminlayout/js/matrix.form_common.js",
+                        //"~/Content/adminlayout/js/matrix.js",
+                        //"~/Content/adminlayout/js/matrix.form_common.js",
                         "~/Content/adminlayout/js/wysihtml5-0.3.0.js",
-                        "~/Content/adminlayout/js/jquery.peity.min.js",
+                        //"~/Content/adminlayout/js/jquery.peity.min.js",
                         "~/Content/adminlayout/js/bootstrap-wysihtml5.js"
                         ));
             
