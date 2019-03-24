@@ -143,6 +143,7 @@ namespace ECommApplication.Controllers
             if (ModelState.IsValid)
             {
                 //int i = OC.SubCategory(SC);
+                int i = OC.AddProduct(product);
 
             }
             return View(product);

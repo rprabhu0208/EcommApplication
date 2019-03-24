@@ -3,13 +3,13 @@
     ViewBag.Title = "Product";
 }
 <script type="text/javascript">
-    function bindSubCategory(category) { 
+    function bindSubCategory(category) {
         $.ajax({
             url: "/Bind/BindSubCategory",
             type: "Get",
             data: { 'CategoryID': category.value },
             datatype: "json",
-            success: function (data) { 
+            success: function (data) {
                 $("#SubCategoryID").children('option:not(:first)').remove();
                 $.each(data.subcategory, function (i, subcategory) {
                     $("#SubCategoryID").append('<option value="' + subcategory.SubCategoryID + '">' + subcategory.SubCategoryName + '</option>');
@@ -33,84 +33,145 @@
             <div class="widget-box">
                 <div class="widget-title">
                     <span class="icon"> <i class="icon-align-justify"></i> </span>
-                    <h5>Sub-Category-info</h5>
+                    <h5>Product-info</h5>
                 </div>
                 <div class="widget-content nopadding">
-
-                    <form action="/Admin/SubCategory" method="post" class="form-horizontal">
-                        @Html.AntiForgeryToken() 
-                        <div class="control-group">
+                    <form action="/Admin/Product" method="post" class="form-horizontal">
+                        @Html.AntiForgeryToken()
+                        <div class="control-group span5">
                             <label class="control-label">Category :</label>
                             <div class="controls">
-                                @Html.DropDownListFor(a => a.CategoryID, new SelectList((new ECommApplication.Models.SubCategory().getCategories()), "CategoryID", "CategoryName"), "--Select--", new { @onchange="bindSubCategory(this)"  })
+                                @Html.DropDownListFor(a => a.CategoryID, new SelectList((new ECommApplication.Models.SubCategory().getCategories()), "CategoryID", "CategoryName"), "--Select--", new { @onchange = "bindSubCategory(this)" })
                                 @Html.ValidationMessageFor(a => a.CategoryID, "", new { @class = "help-inline" })
                             </div>
                         </div>
 
-                        <div class="control-group">
+                        <div class="control-group span5">
                             <label class="control-label">Sub Category :</label>
                             <div class="controls">
                                 @Html.DropDownListFor(a => a.SubCategoryID, new SelectList(string.Empty, "Value", "Text"), "--Select--")
                             </div>
                         </div>
-                        <div class="control-group">
+                        <div class="control-group span5">
                             <label class="control-label">Product Name:</label>
                             <div class="controls">
                                 @Html.TextBoxFor(a => a.ProductName, new { @maxlength = "100" })
                             </div>
                         </div>
-                        <div class="control-group">
+                        <div class="control-group span5">
                             <label class="control-label">Product Description:</label>
                             <div class="controls">
                                 @Html.TextBoxFor(a => a.ProductDescription, new { @maxlength = "100" })
                             </div>
                         </div>
-                        <div class="control-group">
+                        <div class="control-group span5">
                             <label class="control-label">Product Size:</label>
                             <div class="controls">
                                 @Html.TextBoxFor(a => a.ProductSize, new { @maxlength = "100" })
                             </div>
                         </div>
-                        <div class="control-group">
+                        <div class="control-group span5">
                             <label class="control-label">Product Weight:</label>
                             <div class="controls">
                                 @Html.TextBoxFor(a => a.ProductWeight, new { @maxlength = "100" })
                             </div>
                         </div>
-                        <div class="control-group">
+                        <div class="control-group span5">
                             <label class="control-label">Base Price:</label>
                             <div class="controls">
                                 @Html.TextBoxFor(a => a.BasePrice, new { @maxlength = "100" })
                             </div>
                         </div>
-                        <div class="control-group">
+                        <div class="control-group span5">
                             <label class="control-label">Shipping Charges:</label>
                             <div class="controls">
                                 @Html.TextBoxFor(a => a.ShippingCharges, new { @maxlength = "100" })
                             </div>
                         </div>
-                        <div class="control-group">
+                        <div class="control-group span5">
                             <label class="control-label">GST :</label>
                             <div class="controls">
                                 @Html.TextBoxFor(a => a.GST, new { @maxlength = "100" })
                             </div>
                         </div>
-                        <div class="control-group">
+                        <div class="control-group span5">
                             <label class="control-label">Service Tax:</label>
                             <div class="controls">
                                 @Html.TextBoxFor(a => a.ServiceTax, new { @maxlength = "100" })
                             </div>
                         </div>
-                        <div class="control-group">
+                        <div class="control-group span5">
                             <label class="control-label">Final Price:</label>
                             <div class="controls">
                                 @Html.TextBoxFor(a => a.FinalPrice, new { @maxlength = "100" })
                             </div>
                         </div>
-                        <div class="control-group">
+                        <div class="control-group span5">
+                            <label class="control-label">Display at Home Page :</label>
+                            <div class="controls">
+                                @Html.CheckBoxFor(a => a.DisplayAtHomePage)
+                            </div>
+                        </div>
+                        <div class="control-group span7">
                             <label class="control-label">Is Active :</label>
                             <div class="controls">
                                 @Html.CheckBoxFor(a => a.IsActive)
+                            </div>
+                        </div>
+                        <div class="widget-box">
+                            <div class="widget-title">
+                                <span class="icon"> <i class="icon-align-justify"></i> </span>
+                                <h5>Product Image-info</h5>
+                            </div>
+                            <div class="widget-content nopadding">
+                                <div class="control-group ">
+                                    <label class="control-label">Upload Image</label>
+                                    <div class="controls">
+                                        <div class="uploader" id="uniform-undefined"><input type="file" size="19" style="opacity: 0;"><span class="filename">No file selected</span><span class="action">Choose File</span></div>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">Caption :</label>
+                                    <div class="controls">
+                                        <input type="text" id="Caption" name="Caption" />
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">Priority :</label>
+                                    <div class="controls">
+                                        <input type="text" id="Priority" name="Priority" />
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">Is Active :</label>
+                                    <div class="controls">
+                                        @Html.CheckBoxFor(a => a.IsActive)
+                                    </div>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-success" id="btnSave">Save Image</button>
+                                    <button type="button" id="btnClear" class="btn btn-success" onclick="clearRecord()">Clear</button>
+                                </div>
+
+                                <div class="widget-box">
+                                    <div class="widget-title">
+                                        <span class="icon"><i class="icon-th"></i></span>
+                                        <h5>Product Images:</h5>
+                                    </div>
+                                    <div class="widget-content nopadding">
+                                        <table class="table table-bordered data-table" id="tblCategory">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Caption</th>
+                                                    <th>Priority</th>
+                                                    <th>Active</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -118,34 +179,36 @@
                             <button type="submit" class="btn btn-success" id="btnSave">Save</button>
                             <button type="button" id="btnClear" class="btn btn-success" onclick="clearRecord()">Clear</button>
                         </div>
+
                     </form>
                 </div>
             </div>
 
+
         </div>
-    </div>
-    <hr />
-    <div class="row-fluid">
-        <div class="span12">
-            <div class="widget-box">
-                <div class="widget-title">
-                    <span class="icon"><i class="icon-th"></i></span>
-                    <h5>Data table</h5>
+        <hr />
+
+        @*<div class="row-fluid">
+                <div class="span12">
+                    <div class="widget-box">
+                        <div class="widget-title">
+                            <span class="icon"><i class="icon-th"></i></span>
+                            <h5>Data table</h5>
+                        </div>
+                        <div class="widget-content nopadding">
+                            <table class="table table-bordered data-table" id="tblCategory">
+                                <thead>
+                                    <tr>
+                                        <th>Sub Category ID</th>
+                                        <th>Category Name</th>
+                                        <th>SubCategory Name</th>
+                                        <th>Active</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
                 </div>
-                <div class="widget-content nopadding">
-                    <table class="table table-bordered data-table" id="tblCategory">
-                        <thead>
-                            <tr>
-                                <th>Sub Category ID</th>
-                                <th>Category Name</th>
-                                <th>SubCategory Name</th>
-                                <th>Active</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                    </table>
-                </div>
-            </div>
-        </div>
+            </div>*@
     </div>
-</div>

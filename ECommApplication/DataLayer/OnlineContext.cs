@@ -292,8 +292,21 @@ namespace ECommApplication.DataLayer
             try
             {
                 // string password = FormsAuthentication.HashPasswordForStoringInConfigFile(acc.UserPassword.Trim(), "md5");
-                Object[] param = new Object[1];
-                //param[0] = categoryId;
+                Object[] param = new Object[13];
+                param[0] = prd.SubCategoryID;
+                param[1] = prd.ProductId;
+                param[2] = prd.ProductName;
+                param[3] = prd.IsActive;
+                param[4] = prd.DisplayAtHomePage;
+                param[5] = prd.ProductDescription; 
+                param[6] = prd.ProductSize; 
+                param[7] = prd.ProductWeight;
+                param[8] = prd.BasePrice;
+                param[9] = prd.GST;
+                param[10] = prd.ShippingCharges;
+                param[11] = prd.ServiceTax;
+                param[12] = prd.FinalPrice;  
+               
                 i = SqlHelper.ExecuteNonQuery(con, null, "SP_InsertUpdateProduct", param);
             }
             catch (Exception ex)
@@ -307,6 +320,6 @@ namespace ECommApplication.DataLayer
             return i;
         }
 
-        #region 
+        #endregion 
     }
 }
