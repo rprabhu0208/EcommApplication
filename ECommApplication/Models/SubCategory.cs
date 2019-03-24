@@ -18,7 +18,7 @@ namespace ECommApplication.Models
         public int? SubCategoryID { get; set; }
 
         [Required(ErrorMessage = "Please Select Sub Category")]
-        public int CategoryID { get; set; }
+        public int? CategoryID { get; set; }
 
         public bool IsActive { get; set; }
 
@@ -29,7 +29,8 @@ namespace ECommApplication.Models
         public List<Category> getCategories()
         {
             List<Category> lstCategory = new List<Category>();
-            lstCategory = OC.getCategories();
+            
+            lstCategory = OC.getCategories(null);
             return lstCategory;
         }
     }

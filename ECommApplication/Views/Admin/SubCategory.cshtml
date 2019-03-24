@@ -14,13 +14,14 @@
     function editSubCategory(e, categoryId) {
         e.preventDefault();
         $.ajax({
-            url: "/Admin/SubCategory",
+            url: "/Bind/BindSubCategory",
             type: "Get",
             data: { 'SubCategoryId': categoryId },
             datatype: "json",
             success: function (data) {
+                debugger;
                 console.log(data)
-                var subCategory = data.data;
+                var subCategory = data.subcategory[0];
                 $('#CategoryID').val(subCategory.category.CategoryID)
                 $('#SubCategoryID').val(subCategory.SubCategoryID)
                 $('#SubCategoryName').val(subCategory.SubCategoryName)
@@ -56,7 +57,7 @@
         var category = null;
         //clearRecord();
         $.ajax({
-            url: "/BindDataTable/BindSubCategory",
+            url: "/Bind/BindSubCategory",
             type: "POST",
             datatype: "json",
             success: function (data) {

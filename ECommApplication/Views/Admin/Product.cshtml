@@ -1,0 +1,151 @@
+﻿@model ECommApplication.Models.Product
+@{
+    ViewBag.Title = "Product";
+}
+<script type="text/javascript">
+    function bindSubCategory(category) { 
+        $.ajax({
+            url: "/Bind/BindSubCategory",
+            type: "Get",
+            data: { 'CategoryID': category.value },
+            datatype: "json",
+            success: function (data) { 
+                $("#SubCategoryID").children('option:not(:first)').remove();
+                $.each(data.subcategory, function (i, subcategory) {
+                    $("#SubCategoryID").append('<option value="' + subcategory.SubCategoryID + '">' + subcategory.SubCategoryName + '</option>');
+                });
+            }
+        });
+    }
+    $(document).ready(function () {
+        //bindSubCategory($('#CategoryID'));
+    })
+</script>
+
+<div id="content-header">
+    <div id="breadcrumb"> <a href="index.html" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> Home</a> <a href="#" class="tip-bottom">Form elements</a> <a href="#" class="current">Common elements</a> </div>
+
+</div>
+<div class="container-fluid">
+    <hr>
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon"> <i class="icon-align-justify"></i> </span>
+                    <h5>Sub-Category-info</h5>
+                </div>
+                <div class="widget-content nopadding">
+
+                    <form action="/Admin/SubCategory" method="post" class="form-horizontal">
+                        @Html.AntiForgeryToken() 
+                        <div class="control-group">
+                            <label class="control-label">Category :</label>
+                            <div class="controls">
+                                @Html.DropDownListFor(a => a.CategoryID, new SelectList((new ECommApplication.Models.SubCategory().getCategories()), "CategoryID", "CategoryName"), "--Select--", new { @onchange="bindSubCategory(this)"  })
+                                @Html.ValidationMessageFor(a => a.CategoryID, "", new { @class = "help-inline" })
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <label class="control-label">Sub Category :</label>
+                            <div class="controls">
+                                @Html.DropDownListFor(a => a.SubCategoryID, new SelectList(string.Empty, "Value", "Text"), "--Select--")
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Product Name:</label>
+                            <div class="controls">
+                                @Html.TextBoxFor(a => a.ProductName, new { @maxlength = "100" })
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Product Description:</label>
+                            <div class="controls">
+                                @Html.TextBoxFor(a => a.ProductDescription, new { @maxlength = "100" })
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Product Size:</label>
+                            <div class="controls">
+                                @Html.TextBoxFor(a => a.ProductSize, new { @maxlength = "100" })
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Product Weight:</label>
+                            <div class="controls">
+                                @Html.TextBoxFor(a => a.ProductWeight, new { @maxlength = "100" })
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Base Price:</label>
+                            <div class="controls">
+                                @Html.TextBoxFor(a => a.BasePrice, new { @maxlength = "100" })
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Shipping Charges:</label>
+                            <div class="controls">
+                                @Html.TextBoxFor(a => a.ShippingCharges, new { @maxlength = "100" })
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">GST :</label>
+                            <div class="controls">
+                                @Html.TextBoxFor(a => a.GST, new { @maxlength = "100" })
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Service Tax:</label>
+                            <div class="controls">
+                                @Html.TextBoxFor(a => a.ServiceTax, new { @maxlength = "100" })
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Final Price:</label>
+                            <div class="controls">
+                                @Html.TextBoxFor(a => a.FinalPrice, new { @maxlength = "100" })
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Is Active :</label>
+                            <div class="controls">
+                                @Html.CheckBoxFor(a => a.IsActive)
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-success" id="btnSave">Save</button>
+                            <button type="button" id="btnClear" class="btn btn-success" onclick="clearRecord()">Clear</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <hr />
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="widget-box">
+                <div class="widget-title">
+                    <span class="icon"><i class="icon-th"></i></span>
+                    <h5>Data table</h5>
+                </div>
+                <div class="widget-content nopadding">
+                    <table class="table table-bordered data-table" id="tblCategory">
+                        <thead>
+                            <tr>
+                                <th>Sub Category ID</th>
+                                <th>Category Name</th>
+                                <th>SubCategory Name</th>
+                                <th>Active</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

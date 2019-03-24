@@ -100,7 +100,7 @@ namespace ECommApplication.DataLayer
             return category;
         }
 
-        public List<Category> getCategories()
+        public List<Category> getCategories(Category category)
         {
             List<Category> lstCatogies = new List<Category>();
             DataSet ds = null;
@@ -111,8 +111,9 @@ namespace ECommApplication.DataLayer
             try
             {
                 // string password = FormsAuthentication.HashPasswordForStoringInConfigFile(acc.UserPassword.Trim(), "md5");
-                Object[] param = new Object[0]; 
-                  ds = SqlHelper.ExecuteDataset(con, null, "SP_GetCategory", param);
+                Object[] param = new Object[1];
+                param[0] = category?.CategoryID > 0 ? category.CategoryID : null;
+                ds = SqlHelper.ExecuteDataset(con, null, "SP_GetCategory", param);
                 if(ds.Tables.Count > 0)
                 {
                     foreach(DataRow dr in ds.Tables[0].Rows)
@@ -230,7 +231,7 @@ namespace ECommApplication.DataLayer
             return subCategory;
         }
 
-        public List<SubCategory> getSubCategories()
+        public List<SubCategory> getSubCategories(SubCategory subcategory)
         {
             List<SubCategory> lstSubCatogories = new List<SubCategory>();
             DataSet ds = null;
@@ -241,7 +242,9 @@ namespace ECommApplication.DataLayer
             try
             {
                 // string password = FormsAuthentication.HashPasswordForStoringInConfigFile(acc.UserPassword.Trim(), "md5");
-                Object[] param = new Object[0];
+                Object[] param = new Object[2];
+                param[0] = subcategory.SubCategoryID > 0 ? subcategory.SubCategoryID : null;
+                param[1] = subcategory.CategoryID > 0 ? subcategory.CategoryID : null;  
                 ds = SqlHelper.ExecuteDataset(con, null, "SP_GetSubCategory", param);
                 if (ds.Tables.Count > 0)
                 {
@@ -276,5 +279,34 @@ namespace ECommApplication.DataLayer
             return lstSubCatogories;
         }
         #endregion
+
+        #region Product Master
+        public int AddProduct(Product prd)
+        {
+
+            int i = 0;
+            if (con.State != ConnectionState.Open)
+            {
+                con.Open();
+            }
+            try
+            {
+                // string password = FormsAuthentication.HashPasswordForStoringInConfigFile(acc.UserPassword.Trim(), "md5");
+                Object[] param = new Object[1];
+                //param[0] = categoryId;
+                i = SqlHelper.ExecuteNonQuery(con, null, "SP_InsertUpdateProduct", param);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                con.Close();
+            }
+            return i;
+        }
+
+        #region 
     }
 }

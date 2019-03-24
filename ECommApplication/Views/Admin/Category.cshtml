@@ -15,7 +15,7 @@
     function editCategory(e, categoryId) {
         e.preventDefault(); 
         $.ajax({
-            url: "/Admin/Category",
+            url: "/Bind/BindCategory",
             type: "Get",
             data: { 'CategoryId' :  categoryId },
             datatype: "json",
@@ -56,7 +56,7 @@
         var category = null;
         clearRecord();
         $.ajax({
-            url: "/BindDataTable/BindCategory",
+            url: "/Bind/BindCategory",
             type: "POST",
             datatype: "json",
             success: function (data) {
