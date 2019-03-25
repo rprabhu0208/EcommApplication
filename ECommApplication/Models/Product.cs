@@ -8,10 +8,9 @@ namespace ECommApplication.Models
 {
     public class Product
     {
-        public int CategoryID { get; set; }
-        public int SubCategoryID { get; set; } 
-         
-        //[Required(ErrorMessage = "Please enter Product name")]
+        public int? CategoryID { get; set; }
+        public int? SubCategoryID { get; set; } 
+       // [Required(ErrorMessage = "Please enter Product name")]
         [DataType(DataType.Text)]
         public string ProductName { get; set; }
  
@@ -27,9 +26,7 @@ namespace ECommApplication.Models
 
         public int? ProductId { get; set; }
 
-        public int SupplierId { get; set; } 
-
-        public string ProductDetailId { get; set; } 
+        public int SupplierId { get; set; }  
       
         //[Required(ErrorMessage = "Please enter Product Decription")]
         [DataType(DataType.Text)]
@@ -57,10 +54,7 @@ namespace ECommApplication.Models
         public int Quantity { get; set; } 
 
         public string shortDescription { get; set; }
-
-        public HttpPostedFileBase ProductImage { get; set; }
-        public string ImageOrder { get; set; }
-
+          
         public decimal BasePrice { get; set; }
         public decimal GST { get; set; }
         public decimal ShippingCharges { get; set; } 

@@ -43,7 +43,7 @@
         formdata.append('objArr', objArr);
            
         $.ajax({
-            url: '/Admin/UploadFile',
+            url: '/Admin/UploadImage',
             type: "POST", 
             processData: false, // Not to process data  
             data: formdata,
@@ -91,15 +91,46 @@
             e.preventDefault();
             uploadImage()
         })
+        var productsData = "";
+        var category = null;
+        $.ajax({
+            url: "/Bind/BindProducts",
+            type: "POST",
+            datatype: "json",
+            success: function (data) { 
+                productsData = data;
+                loadDataTable();
+            },
+        });
+
+        function loadDataTable() {
+            $('#tblProducts').DataTable({
+                "ordering": true,
+                "bJQueryUI": true,
+                "sPaginationType": "full_numbers",
+                "sDom": '<""l>t<"F"fp>',
+                "data": productsData.products,
+                "searching": true,
+                "columns": [
+                    { 'data': 'ProductId', "name": "ProductId" },
+                    { 'data': 'ProductName', "name": "ProductName" },
+                    { 'data': 'IsActive', "name": "IsActive" },
+                    {
+                        "render": function (data, type, obj, meta) {
+                            return `<a class="btn btn-primary" href="#" onclick="javascript:editCategory(event,'` + obj.ProductID + `')">Edit</a>
+                            <a class="btn btn-danger" href="#" onclick="javascript:deleteCategory(event,'` + obj.ProductID + `')">Delete</a>
+                            `;
+                        }
+                    },
+                ]
+
+            });
+        }
     })
 </script>
-
-<div id="content-header">
-    <div id="breadcrumb"> <a href="index.html" title="Go to Home" class="tip-bottom"><i class="icon-home"></i> Home</a> <a href="#" class="tip-bottom">Form elements</a> <a href="#" class="current">Common elements</a> </div>
-
-</div>
+ 
 <div class="container-fluid">
-    <hr>
+ 
     <div class="row-fluid">
         <div class="span12">
             <div class="widget-box">
@@ -113,8 +144,9 @@
                         <div class="control-group span5">
                             <label class="control-label">Category :</label>
                             <div class="controls">
+                                @Html.HiddenFor(a => a.ProductId)
                                 @Html.DropDownListFor(a => a.CategoryID, new SelectList((new ECommApplication.Models.SubCategory().getCategories()), "CategoryID", "CategoryName"), "--Select--", new { @onchange = "bindSubCategory(this)" })
-                                @Html.ValidationMessageFor(a => a.CategoryID, "", new { @class = "help-inline" })
+                                
                             </div>
                         </div>
 
@@ -128,6 +160,7 @@
                             <label class="control-label">Product Name:</label>
                             <div class="controls">
                                 @Html.TextBoxFor(a => a.ProductName, new { @maxlength = "100" })
+                                @Html.ValidationMessageFor(a => a.ProductName, "", new { @class = "help-inline" })
                             </div>
                         </div>
                         <div class="control-group span5">
@@ -261,7 +294,7 @@
         </div>
         <hr />
 
-        @*<div class="row-fluid">
+        <div class="row-fluid">
                 <div class="span12">
                     <div class="widget-box">
                         <div class="widget-title">
@@ -269,12 +302,11 @@
                             <h5>Data table</h5>
                         </div>
                         <div class="widget-content nopadding">
-                            <table class="table table-bordered data-table" id="tblCategory">
+                            <table class="table table-bordered data-table" id="tblProducts">
                                 <thead>
                                     <tr>
-                                        <th>Sub Category ID</th>
-                                        <th>Category Name</th>
-                                        <th>SubCategory Name</th>
+                                        <th>Product ID</th>
+                                        <th>Product Name</th> 
                                         <th>Active</th>
                                         <th></th>
                                     </tr>
@@ -283,5 +315,6 @@
                         </div>
                     </div>
                 </div>
-            </div>*@
+            </div>
+    </div>
     </div>

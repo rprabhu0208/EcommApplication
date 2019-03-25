@@ -17,7 +17,7 @@ namespace ECommApplication.Models
         }
         public int? SubCategoryID { get; set; }
 
-        [Required(ErrorMessage = "Please Select Sub Category")]
+        [Required(ErrorMessage = "Please Select Category")]
         public int? CategoryID { get; set; }
 
         public bool IsActive { get; set; }

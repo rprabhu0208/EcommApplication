@@ -1,4 +1,4 @@
-﻿
+﻿@model ECommApplication.Models.UserLogin
 @{
     Layout = "~/Views/Shared/_AccountLayout.cshtml";
 }
@@ -19,21 +19,23 @@
                     <h5>Login</h5>
                 </div>
                 <div class="widget-content nopadding">
-                    <form class="form-horizontal" method="post" action="#" name="password_validate" id="password_validate" novalidate="novalidate">
+                    <form class="form-horizontal" method="post" action="/Account/AdminLogin"  >
                         <div class="control-group">
                             <label class="control-label">Username</label>
                             <div class="controls">
-                                <input type="text" name="username" id="username">
+                                @Html.TextBoxFor(a => a.UserName, new { @maxlength = "100" })
+                                @Html.ValidationMessageFor(a => a.UserName, "", new { @class = "help-inline" })
                             </div>
                         </div>
                         <div class="control-group">
                             <label class="control-label">Password</label>
-                            <div class="controls">
-                                <input type="password" name="pwd" id="pwd">
+                            <div class="controls"> 
+                                @Html.PasswordFor(a => a.UserPassword, new { @maxlength = "100"   })
+                                @Html.ValidationMessageFor(a => a.UserPassword, "", new { @class = "help-inline" })
                             </div>
                         </div>
                         <div class="form-actions">
-                            <input type="submit" value="Validate" class="btn btn-success">
+                            <input type="submit" value="Login" class="btn btn-success">
                         </div>
                     </form>
                 </div>

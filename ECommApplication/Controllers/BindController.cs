@@ -29,6 +29,12 @@ namespace ECommApplication.Controllers
             lstSubCatogories = OC.getSubCategories(subcategory);
             return Json(new { subcategory = lstSubCatogories }, JsonRequestBehavior.AllowGet);
         }
+        public ActionResult BindProducts(Product product)
+        {
+            List<Product> lstProducts = new List<Product>();
+            lstProducts = OC.getProducts(product);
+            return Json(new { products = lstProducts }, JsonRequestBehavior.AllowGet);
+        }
         public ActionResult Index()
         {
             return View();

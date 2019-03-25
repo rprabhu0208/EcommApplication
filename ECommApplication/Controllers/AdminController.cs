@@ -1,4 +1,5 @@
-﻿using ECommApplication.DataLayer;
+﻿using ECommApplication.CustomFilters;
+using ECommApplication.DataLayer;
 using ECommApplication.Models;
 using Newtonsoft.Json;
 using System;
@@ -10,6 +11,7 @@ using System.Web.Mvc;
 
 namespace ECommApplication.Controllers
 {
+    [AuthAttribute]
     public class AdminController : Controller
     {
         OnlineContext OC = null;
@@ -144,6 +146,11 @@ namespace ECommApplication.Controllers
         {
             if (ModelState.IsValid)
             {
+                if(TempData["productImages"]!=null)
+                {
+                  //  product.productImages = TempData["productImages"] as List<ProductImage>;
+                }
+
                 //int i = OC.SubCategory(SC);
                 int i = OC.AddProduct(product);
 
@@ -152,7 +159,7 @@ namespace ECommApplication.Controllers
         }
 
         #endregion 
-        public ActionResult UploadFile(ProductImage prodImage)
+        public ActionResult UploadImage(ProductImage prodImage)
         {
             List<ProductImage> productImages = null;
             if (TempData["productImages"] != null)

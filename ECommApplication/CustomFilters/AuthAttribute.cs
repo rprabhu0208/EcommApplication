@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Mvc.Filters;
+using System.Web.Routing;
 
 namespace ECommApplication.CustomFilters
 {
@@ -11,16 +12,21 @@ namespace ECommApplication.CustomFilters
     {
         public void OnAuthentication(AuthenticationContext filterContext)
         {
-            if (!String.IsNullOrEmpty(HttpContext.Current.Session["UserName"].ToString()))
+            if (String.IsNullOrEmpty(Convert.ToString(HttpContext.Current.Session["AdminUserName"])))
             {
-
+                filterContext.Result = new RedirectToRouteResult("", null);
+                RouteValueDictionary redirectTargetDictionary = new RouteValueDictionary();
+                redirectTargetDictionary.Add("action", "AdminLogin");
+                redirectTargetDictionary.Add("controller", "Account");
+                redirectTargetDictionary.Add("customMessage", "Session Timeout!!!");
+                filterContext.Result = new RedirectToRouteResult(redirectTargetDictionary);
             }
             //throw new NotImplementedException();
         }
 
         public void OnAuthenticationChallenge(AuthenticationChallengeContext filterContext)
         {
-            throw new NotImplementedException();
+          //  throw new NotImplementedException();
         }
     }
 }

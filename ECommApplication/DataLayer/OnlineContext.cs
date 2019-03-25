@@ -320,6 +320,80 @@ namespace ECommApplication.DataLayer
             return i;
         }
 
-        #endregion 
+        public List<Product> getProducts(Product product)
+        {
+            List<Product> lstProducts = new List<Product>();
+            DataSet ds = null;
+            if (con.State != ConnectionState.Open)
+            {
+                con.Open();
+            }
+            try
+            {
+                // string password = FormsAuthentication.HashPasswordForStoringInConfigFile(acc.UserPassword.Trim(), "md5");
+                Object[] param = new Object[1];
+                param[0] = product.ProductId > 0 ? product.ProductId : null; 
+                ds = SqlHelper.ExecuteDataset(con, null, "SP_GetProducts", param);
+                if (ds.Tables.Count > 0)
+                {
+                    foreach (DataRow dr in ds.Tables[0].Rows)
+                    {
+                        lstProducts.Add(new Product
+                        {
+                            //   CategoryID = Convert.ToInt32(dr["CategoryID"]),
+                            ProductId = Convert.ToInt32(dr["ProductID"]),
+                            ProductName = Convert.ToString(dr["ProductName"]),
+                            IsActive = Convert.ToBoolean(dr["IsActive"])
+                        });
+                    }
+
+                    //for(int i;i<ds.Tables[0].Rows.Count; i ++)
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                con.Close();
+            }
+            return lstProducts;
+        }
+        #endregion
+
+
+        #region AdminLogin
+        public bool ValidateAdmin(UserLogin user)
+        {
+            bool isValid = false;
+            DataSet ds = null;
+            if (con.State != ConnectionState.Open)
+            {
+                con.Open();
+            }
+            try
+            {
+                // string password = FormsAuthentication.HashPasswordForStoringInConfigFile(acc.UserPassword.Trim(), "md5");
+                Object[] param = new Object[2];
+                param[0] = user.UserName;
+                param[1] = user.UserPassword;
+                ds = SqlHelper.ExecuteDataset(con, null, "SP_ValidateAdmin", param);
+                if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                {
+                    isValid = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                con.Close();
+            }
+            return isValid;
+        }
+        #endregion
     }
 }
