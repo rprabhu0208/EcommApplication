@@ -1,7 +1,9 @@
 ﻿using ECommApplication.DataLayer;
 using ECommApplication.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -150,6 +152,61 @@ namespace ECommApplication.Controllers
         }
 
         #endregion 
+        public ActionResult UploadFile(ProductImage prodImage)
+        {
+            List<ProductImage> productImages = null;
+            if (TempData["productImages"] != null)
+                productImages = TempData["productImages"] as List<ProductImage>;
+            else
+                productImages = new List<ProductImage>();
+
+            if (Request.Files.Count > 0)
+            {
+                try
+                {
+                    //  Get all files from Request object  
+                    HttpFileCollectionBase files = Request.Files;
+                    for (int i = 0; i < files.Count; i++)
+                    {
+                        //string path = AppDomain.CurrentDomain.BaseDirectory + "Uploads/";  
+                        //string filename = Path.GetFileName(Request.Files[i].FileName);  
+
+                        HttpPostedFileBase file = files[i];
+                        string fname;
+
+                        // Checking for Internet Explorer  
+                        if (Request.Browser.Browser.ToUpper() == "IE" || Request.Browser.Browser.ToUpper() == "INTERNETEXPLORER")
+                        {
+                            string[] testfiles = file.FileName.Split(new char[] { '\\' });
+                            fname = testfiles[testfiles.Length - 1];
+                        }
+                        else
+                        {
+                            fname = file.FileName;
+                        }
+                       // prodImage.productImage = file;
+                        // Get the complete folder path and store the file inside it.  
+                        //fname = Path.Combine(Server.MapPath("~/TempFiles/"), fname);
+                        // file.SaveAs(fname);
+                        prodImage.productImagePath = "/TempFiles/" + fname;
+                    }
+                    
+                    productImages.Add(prodImage);
+                    TempData["productImages"] = productImages;
+                    // Returns message that successfully uploaded  
+                    return Json(new { productImages = productImages.ToList() }, JsonRequestBehavior.AllowGet);
+                }
+                catch (Exception ex)
+                {
+                    return Json("Error occurred. Error details: " + ex.Message);
+                }
+            }
+            else
+            {
+                return Json("No files selected.");
+            }
+        }
+
         public ActionResult DashBoard()
         {
             return View();

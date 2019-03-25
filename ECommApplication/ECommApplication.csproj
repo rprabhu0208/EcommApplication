@@ -319,6 +319,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="ProductImages\" />
+    <Folder Include="TempFiles\" />
     <Folder Include="Views\BindDataTable\" />
   </ItemGroup>
   <ItemGroup>

@@ -70,4 +70,6 @@ namespace ECommApplication.Models
         public List<ProductImage> productImages { get; set; }
 
     }
+
+    
 }

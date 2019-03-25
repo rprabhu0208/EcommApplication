@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "Product";
 }
+<script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
     function bindSubCategory(category) {
         $.ajax({
@@ -17,8 +18,79 @@
             }
         });
     }
+
+    function uploadImage() {
+       
+        var formdata = new FormData(); //FormData object 
+        var fileInput = document.getElementById('imageFile');  
+        //Iterating through each files selected in fileInput
+        for (i = 0; i < fileInput.files.length; i++) {
+            //Appending each file to FormData object
+            formdata.append(fileInput.files[i].name, fileInput.files[i]);
+        }
+        //formdata.append("caption", $('#Caption').val())
+        //formdata.append("priority", $('#Priority').val())
+        //formdata.append("isActive", $('#IsActiveImage').val())
+         
+       
+        
+        var objArr = [];
+
+        formdata.append("Caption", $('#Caption').val());
+        formdata.append("Priority", $('#Priority').val()); 
+
+        //JSON obj
+        formdata.append('objArr', objArr);
+           
+        $.ajax({
+            url: '/Admin/UploadFile',
+            type: "POST", 
+            processData: false, // Not to process data  
+            data: formdata,
+            contentType:  false,
+            success: function (result) { 
+                $('#tblProductImages').DataTable({
+                    "ordering": true,
+                    "bJQueryUI": true,
+                    "sPaginationType": "full_numbers",
+                    "sDom": '<""l>t<"F"fp>',
+                    "data": result.productImages,
+                    "searching": true,
+                    "columns": [
+                        { 'data': 'ImageID', "name": "ImageID" },
+                        { 'data': 'Caption', "name": "Caption" },
+                        { 'data': 'Priority', "name": "Priority" },
+                        { 'data': 'IsActive', "name": "IsActive" }, 
+                        {
+                            "render": function (data, type, obj, meta) {
+                                return `<img src='` + obj.productImagePath +`' class="span11"  >`;
+                            }
+                        },
+                        {
+                            "render": function (data, type, obj, meta) {
+                                return `<a class="btn btn-primary" href="#" onclick="javascript:editSubCategory(event,'` + obj.ID + `')">Edit</a>
+                            <a class="btn btn-danger" href="#" onclick="javascript:deleteCategory(event,'` + obj.ID + `')">Delete</a>
+                            `;
+                            }
+                        },
+                    ]
+
+                });
+            },
+            error: function (err) {
+                alert(err.statusText);
+            }  
+        });
+
+       
+         
+    }
     $(document).ready(function () {
         //bindSubCategory($('#CategoryID'));
+        $('#btnSaveImage').click(function (e) {
+            e.preventDefault();
+            uploadImage()
+        })
     })
 </script>
 
@@ -127,7 +199,7 @@
                                 <div class="control-group ">
                                     <label class="control-label">Upload Image</label>
                                     <div class="controls">
-                                        <div class="uploader" id="uniform-undefined"><input type="file" size="19" style="opacity: 0;"><span class="filename">No file selected</span><span class="action">Choose File</span></div>
+                                        <div class="uploader" id="uniform-undefined"><input type="file" size="19" style="opacity: 0;"  id="imageFile"><span class="filename">No file selected</span><span class="action">Choose File</span></div>
                                     </div>
                                 </div>
                                 <div class="control-group">
@@ -145,11 +217,11 @@
                                 <div class="control-group">
                                     <label class="control-label">Is Active :</label>
                                     <div class="controls">
-                                        @Html.CheckBoxFor(a => a.IsActive)
+                                        <input type="checkbox" id="IsActiveImage" name="IsActiveImage" />
                                     </div>
                                 </div>
                                 <div class="form-actions">
-                                    <button type="submit" class="btn btn-success" id="btnSave">Save Image</button>
+                                    <button type="submit" class="btn btn-success" id="btnSaveImage">Save Image</button>
                                     <button type="button" id="btnClear" class="btn btn-success" onclick="clearRecord()">Clear</button>
                                 </div>
 
@@ -159,13 +231,14 @@
                                         <h5>Product Images:</h5>
                                     </div>
                                     <div class="widget-content nopadding">
-                                        <table class="table table-bordered data-table" id="tblCategory">
+                                        <table class="table table-bordered data-table" id="tblProductImages">
                                             <thead>
                                                 <tr>
                                                     <th>ID</th>
                                                     <th>Caption</th>
                                                     <th>Priority</th>
                                                     <th>Active</th>
+                                                    <th>Image</th>
                                                     <th></th>
                                                 </tr>
                                             </thead>
