@@ -126,9 +126,11 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\BindController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="CustomFilters\AuthAttribute.cs" />
     <Compile Include="DataLayer\Common\SqlHelper.cs" />
     <Compile Include="DataLayer\OnlineContext.cs" />
     <Compile Include="Global.asax.cs">
@@ -316,6 +318,8 @@
     <Content Include="Views\Shared\_SideBarPartial.cshtml" />
     <Content Include="Views\Admin\SubCategory.cshtml" />
     <Content Include="Views\Admin\Product.cshtml" />
+    <Content Include="Views\Account\AdminLogin.cshtml" />
+    <Content Include="Views\Shared\_AccountLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

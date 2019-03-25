@@ -37,7 +37,7 @@ namespace ECommApplication
                       "~/Content/adminlayout/css/matrix-style.css",
                       "~/Content/adminlayout/css/matrix-media.css",
                       "~/Content/adminlayout/css/bootstrap-wysihtml5.css",
-                      "~/Content/adminlayout/css/font-awesome.css",
+                      "~/Content/adminlayout/font-awesome/css/font-awesome.css",
                       "~/Content/adminlayout/css/fontsgoogleapiscss.css" 
                       ));
 
