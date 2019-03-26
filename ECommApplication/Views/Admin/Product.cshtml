@@ -69,7 +69,7 @@
                         {
                             "render": function (data, type, obj, meta) {
                                 return `<a class="btn btn-primary" href="#" onclick="javascript:editSubCategory(event,'` + obj.ID + `')">Edit</a>
-                            <a class="btn btn-danger" href="#" onclick="javascript:deleteCategory(event,'` + obj.ID + `')">Delete</a>
+                            
                             `;
                             }
                         },
@@ -118,7 +118,7 @@
                     {
                         "render": function (data, type, obj, meta) {
                             return `<a class="btn btn-primary" href="#" onclick="javascript:editCategory(event,'` + obj.ProductID + `')">Edit</a>
-                            <a class="btn btn-danger" href="#" onclick="javascript:deleteCategory(event,'` + obj.ProductID + `')">Delete</a>
+                          
                             `;
                         }
                     },
@@ -126,6 +126,8 @@
 
             });
         }
+    //<a class="btn btn-danger" href="#" onclick="javascript:deleteCategory(event,'` + obj.ID + `')">Delete</a>
+    //  <a class="btn btn-danger" href="#" onclick="javascript:deleteCategory(event,'` + obj.ProductID + `')">Delete</a>
     })
 </script>
  

@@ -82,7 +82,7 @@
                     {
                         "render": function (data, type, obj, meta) {
                             return `<a class="btn btn-primary" href="#" onclick="javascript:editSubCategory(event,'` + obj.SubCategoryID + `')">Edit</a>
-                            <a class="btn btn-danger" href="#" onclick="javascript:deleteCategory(event,'` + obj.SubCategoryID + `')">Delete</a>
+                            
                             `;
                         }
                     },
@@ -90,6 +90,7 @@
 
             });
         }
+   // <a class="btn btn-danger" href="#" onclick="javascript:deleteCategory(event,'` + obj.SubCategoryID + `')">Delete</a>
     });
 </script> 
 <div class="container-fluid">

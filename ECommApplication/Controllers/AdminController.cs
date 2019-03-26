@@ -8,6 +8,8 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace ECommApplication.Controllers
 {
@@ -148,7 +150,15 @@ namespace ECommApplication.Controllers
             {
                 if(TempData["productImages"]!=null)
                 {
-                  //  product.productImages = TempData["productImages"] as List<ProductImage>;
+                   // XmlSerializer xmlSer = new XmlSerializer(typeof(ProductImage));
+                   // //  product.productImages = TempData["productImages"] as List<ProductImage>;
+                   //// xmlSer.Serialize()
+                   // using (var stream = new StringWriter())
+                   // using (var writer = XmlWriter.Create(stream))
+                   // {
+                   //     xmlSer.Serialize(writer, TempData["productImages"]);
+              
+                   // }
                 }
 
                 //int i = OC.SubCategory(SC);

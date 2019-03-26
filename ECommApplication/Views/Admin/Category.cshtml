@@ -83,7 +83,7 @@
                     {
                         "render": function (data, type, obj, meta) {
                             return `<a class="btn btn-primary" href="#" onclick="javascript:editCategory(event,'` + obj.CategoryID + `')">Edit</a>
-                            <a class="btn btn-danger" href="#" onclick="javascript:deleteCategory(event,'` + obj.CategoryID + `')">Delete</a>
+                            
                             `;
                         }
                     },
@@ -91,6 +91,7 @@
 
             });
         }
+    //<a class="btn btn-danger" href="#" onclick="javascript:deleteCategory(event,'` + obj.CategoryID + `')">Delete</a>
     });
 </script>
  

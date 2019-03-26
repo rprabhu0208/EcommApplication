@@ -12,7 +12,7 @@ namespace ECommApplication.DataLayer
 {
     public class OnlineContext
     {
-        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["SGNPEcommerce"].ToString());
+        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["ECommApplication"].ToString());
         DataSet ds;
 
         #region CategoryMaster
