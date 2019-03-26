@@ -1,4 +1,5 @@
-﻿using ECommApplication.DataLayer.Common;
+﻿using ECommApplication.Common;
+using ECommApplication.DataLayer.Common;
 using ECommApplication.Models;
 using System;
 using System.Collections.Generic;
@@ -30,8 +31,8 @@ namespace ECommApplication.DataLayer
                 param[0] = obj.CategoryID;
                 param[1] = obj.CategoryName;
                 param[2] = obj.IsActive;
-                 
-                i = SqlHelper.ExecuteNonQuery(con, null, "SP_InsertUpdateCategory", param); 
+
+                i = SqlHelper.ExecuteNonQuery(con, null, "SP_InsertUpdateCategory", param);
             }
             catch (Exception ex)
             {
@@ -55,7 +56,7 @@ namespace ECommApplication.DataLayer
             {
                 // string password = FormsAuthentication.HashPasswordForStoringInConfigFile(acc.UserPassword.Trim(), "md5");
                 Object[] param = new Object[1];
-                param[0] = categoryId; 
+                param[0] = categoryId;
                 i = SqlHelper.ExecuteNonQuery(con, null, "SP_DeleteCategory", param);
             }
             catch (Exception ex)
@@ -68,7 +69,8 @@ namespace ECommApplication.DataLayer
             }
             return i;
         }
-        public Category GetCategory(int categoryId) {
+        public Category GetCategory(int categoryId)
+        {
             Category category = null;
             DataSet ds = null;
             if (con.State != ConnectionState.Open)
@@ -86,7 +88,7 @@ namespace ECommApplication.DataLayer
                     category = new Category();
                     category.CategoryID = Convert.ToInt32(ds.Tables[0].Rows[0]["CategoryID"]);
                     category.CategoryName = Convert.ToString(ds.Tables[0].Rows[0]["CategoryName"]);
-                    category.IsActive = Convert.ToBoolean(ds.Tables[0].Rows[0]["IsActive"]); 
+                    category.IsActive = Convert.ToBoolean(ds.Tables[0].Rows[0]["IsActive"]);
                 }
             }
             catch (Exception ex)
@@ -114,15 +116,18 @@ namespace ECommApplication.DataLayer
                 Object[] param = new Object[1];
                 param[0] = category?.CategoryID > 0 ? category.CategoryID : null;
                 ds = SqlHelper.ExecuteDataset(con, null, "SP_GetCategory", param);
-                if(ds.Tables.Count > 0)
+                if (ds.Tables.Count > 0)
                 {
-                    foreach(DataRow dr in ds.Tables[0].Rows)
+                    foreach (DataRow dr in ds.Tables[0].Rows)
                     {
-                        lstCatogies.Add(new Category {
+                        lstCatogies.Add(new Category
+                        {
                             CategoryID = Convert.ToInt32(dr["CategoryID"]),
-                            CategoryName = Convert.ToString(dr["CategoryName"]), IsActive = Convert.ToBoolean(dr["IsActive"] )});
+                            CategoryName = Convert.ToString(dr["CategoryName"]),
+                            IsActive = Convert.ToBoolean(dr["IsActive"])
+                        });
                     }
-                        
+
                     //for(int i;i<ds.Tables[0].Rows.Count; i ++)
                 }
             }
@@ -244,7 +249,7 @@ namespace ECommApplication.DataLayer
                 // string password = FormsAuthentication.HashPasswordForStoringInConfigFile(acc.UserPassword.Trim(), "md5");
                 Object[] param = new Object[2];
                 param[0] = subcategory.SubCategoryID > 0 ? subcategory.SubCategoryID : null;
-                param[1] = subcategory.CategoryID > 0 ? subcategory.CategoryID : null;  
+                param[1] = subcategory.CategoryID > 0 ? subcategory.CategoryID : null;
                 ds = SqlHelper.ExecuteDataset(con, null, "SP_GetSubCategory", param);
                 if (ds.Tables.Count > 0)
                 {
@@ -252,7 +257,7 @@ namespace ECommApplication.DataLayer
                     {
                         lstSubCatogories.Add(new SubCategory
                         {
-                         //   CategoryID = Convert.ToInt32(dr["CategoryID"]),
+                            //   CategoryID = Convert.ToInt32(dr["CategoryID"]),
                             SubCategoryID = Convert.ToInt32(dr["SubCategoryID"]),
                             SubCategoryName = Convert.ToString(dr["SubCategoryName"]),
                             IsActive = Convert.ToBoolean(dr["IsActive"]),
@@ -291,22 +296,28 @@ namespace ECommApplication.DataLayer
             }
             try
             {
+                string prdXML = "";
                 // string password = FormsAuthentication.HashPasswordForStoringInConfigFile(acc.UserPassword.Trim(), "md5");
-                Object[] param = new Object[13];
-                param[0] = prd.SubCategoryID;
+                // Returns message that successfully uploaded  
+                if (prd.productImages != null && prd.productImages.Count > 0)
+                {
+                    prdXML = CommonFunctions.convertObjectListToXML<ProductImage>(prd.productImages);
+                }
+                Object[] param = new Object[14];
+                param[0] = prd.subCategory.SubCategoryID;
                 param[1] = prd.ProductId;
                 param[2] = prd.ProductName;
                 param[3] = prd.IsActive;
                 param[4] = prd.DisplayAtHomePage;
-                param[5] = prd.ProductDescription; 
-                param[6] = prd.ProductSize; 
+                param[5] = prd.ProductDescription;
+                param[6] = prd.ProductSize;
                 param[7] = prd.ProductWeight;
                 param[8] = prd.BasePrice;
                 param[9] = prd.GST;
                 param[10] = prd.ShippingCharges;
                 param[11] = prd.ServiceTax;
-                param[12] = prd.FinalPrice;  
-               
+                param[12] = prd.FinalPrice;
+                param[13] = prdXML;
                 i = SqlHelper.ExecuteNonQuery(con, null, "SP_InsertUpdateProduct", param);
             }
             catch (Exception ex)
@@ -332,7 +343,7 @@ namespace ECommApplication.DataLayer
             {
                 // string password = FormsAuthentication.HashPasswordForStoringInConfigFile(acc.UserPassword.Trim(), "md5");
                 Object[] param = new Object[1];
-                param[0] = product.ProductId > 0 ? product.ProductId : null; 
+                param[0] = product.ProductId > 0 ? product.ProductId : null;
                 ds = SqlHelper.ExecuteDataset(con, null, "SP_GetProducts", param);
                 if (ds.Tables.Count > 0)
                 {
@@ -341,12 +352,53 @@ namespace ECommApplication.DataLayer
                         lstProducts.Add(new Product
                         {
                             //   CategoryID = Convert.ToInt32(dr["CategoryID"]),
+                            //CategoryID = Convert.ToInt32(dr["CategoryID"]),
+                            //SubCategoryID = Convert.ToInt32(dr["SubCategoryID"]),
                             ProductId = Convert.ToInt32(dr["ProductID"]),
                             ProductName = Convert.ToString(dr["ProductName"]),
-                            IsActive = Convert.ToBoolean(dr["IsActive"])
+                            ProductDescription = Convert.ToString(dr["ProductDescription"]),
+                            ProductSize = Convert.ToString(dr["ProductSize"]),
+                            ProductWeight = Convert.ToString(dr["ProductWeight"]),
+                            BasePrice = Convert.ToDecimal(dr["BasePrice"]),
+                            ShippingCharges = Convert.ToDecimal(dr["ShippingCharges"]),
+                            GST = Convert.ToDecimal(dr["GST"]),
+                            ServiceTax = Convert.ToDecimal(dr["ServiceTax"]),
+                            FinalPrice = Convert.ToDecimal(dr["FinalPrice"]),
+                            DisplayAtHomePage = Convert.ToBoolean(dr["DisplayAtHomePage"]),
+                            IsActive = Convert.ToBoolean(dr["IsActive"]),
+                            subCategory = new SubCategory()
+                            {
+                                SubCategoryID = Convert.ToInt32(dr["SubCategoryID"]),
+                                SubCategoryName = Convert.ToString(dr["SubCategoryName"]),
+                                category = new Category()
+                                {
+                                    CategoryID = Convert.ToInt32(dr["CategoryID"]),
+                                    CategoryName = Convert.ToString(dr["CategoryName"])
+                                }
+                            }
                         });
                     }
 
+                    if (product.ProductId > 0)
+                    {
+                        if (ds.Tables.Count > 1)
+                        {
+                            lstProducts[0].productImages = new List<ProductImage>();
+
+                            foreach (DataRow dr in ds.Tables[1].Rows)
+                            {
+                                lstProducts[0].productImages.Add(
+                                    new ProductImage()
+                                    {
+                                        ImageID = Convert.ToInt32(dr["ProductImageID"]),
+                                        Priority = Convert.ToInt32(dr["Priority"]),
+                                        IsActive = Convert.ToBoolean(dr["IsActive"]),
+                                        Caption = Convert.ToString(dr["Caption"]),
+                                        productImagePath = Convert.ToString(dr["ImagePath"])
+                                    });
+                            }
+                        }
+                    }
                     //for(int i;i<ds.Tables[0].Rows.Count; i ++)
                 }
             }

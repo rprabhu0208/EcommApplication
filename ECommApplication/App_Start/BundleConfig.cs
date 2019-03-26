@@ -27,7 +27,7 @@ namespace ECommApplication
                       "~/Content/site.css"));
 
 
-            bundles.Add(new StyleBundle("~/Content/adminlayout/css").Include(
+            bundles.Add(new StyleBundle("~/Content/admin-layout/css").Include(
                       "~/Content/adminlayout/css/bootstrap.min.css",
                       "~/Content/adminlayout/css/bootstrap-responsive.min.css",
                       "~/Content/adminlayout/css/colorpicker.css",
@@ -41,7 +41,7 @@ namespace ECommApplication
                       "~/Content/adminlayout/css/fontsgoogleapiscss.css" 
                       ));
 
-            bundles.Add(new ScriptBundle("~/bundles/adminlayout/js").Include(
+            bundles.Add(new ScriptBundle("~/bundles/admin-layout/js").Include(
                         "~/Content/adminlayout/js/jquery.min.js",
                        // "~/Content/adminlayout/js/jquery.dataTables.min.js",
                         //"~/Content/adminlayout/js/jquery.ui.custom.js",

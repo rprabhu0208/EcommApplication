@@ -12,16 +12,16 @@ namespace ECommApplication.Controllers
     {
         // GET: BindDataTable
         OnlineContext OC = null;
-       public BindController()
+        public BindController()
         {
             OC = new OnlineContext();
         }
-       
+
         public ActionResult BindCategory(Category category)
-        { 
+        {
             List<Category> lstCategory = new List<Category>();
             lstCategory = OC.getCategories(category);
-            return Json(new { category = lstCategory },JsonRequestBehavior.AllowGet);
+            return Json(new { category = lstCategory }, JsonRequestBehavior.AllowGet);
         }
         public ActionResult BindSubCategory(SubCategory subcategory)
         {
@@ -33,6 +33,8 @@ namespace ECommApplication.Controllers
         {
             List<Product> lstProducts = new List<Product>();
             lstProducts = OC.getProducts(product);
+            if (product.ProductId > 0 && lstProducts.Count > 0 && lstProducts[0].productImages != null)
+                Session["productImages"] = lstProducts[0].productImages;
             return Json(new { products = lstProducts }, JsonRequestBehavior.AllowGet);
         }
         public ActionResult Index()

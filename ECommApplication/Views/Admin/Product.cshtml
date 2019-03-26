@@ -4,25 +4,98 @@
 }
 <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
-    function bindSubCategory(category) {
+    function bindSubCategory(subCategory) {
+        var categoryID = $('#CategoryID').val()
         $.ajax({
             url: "/Bind/BindSubCategory",
             type: "Get",
-            data: { 'CategoryID': category.value },
+            data: { 'CategoryID': categoryID},
             datatype: "json",
             success: function (data) {
                 $("#SubCategoryID").children('option:not(:first)').remove();
                 $.each(data.subcategory, function (i, subcategory) {
                     $("#SubCategoryID").append('<option value="' + subcategory.SubCategoryID + '">' + subcategory.SubCategoryName + '</option>');
                 });
+                if (subCategory != undefined && subCategory != '')
+                    $('#SubCategoryID').val(subCategory)
             }
         });
     }
+    function editProduct(e, productId) {
+        e.preventDefault();
 
+        $.ajax({
+            url: "/Bind/BindProducts",
+            type: "Get",
+            data: { 'ProductId': productId },
+            datatype: "json",
+            success: function (data) {
+                console.log(data)
+                var product = data.products[0];
+                $('#CategoryID').val(product.subCategory.category.CategoryID)
+                bindSubCategory(product.subCategory.SubCategoryID)
+              //  $('#SubCategoryID').val(product.subCategory.SubCategoryID)
+                $('#ProductId').val(product.ProductId)
+                $('#ProductName').val(product.ProductName)
+                $('#ProductDescription').val(product.ProductDescription)
+                $('#ProductSize').val(product.ProductSize)
+                $('#ProductWeight').val(product.ProductWeight)
+                $('#BasePrice').val(product.BasePrice)
+                $('#ShippingCharges').val(product.ShippingCharges)
+                $('#GST').val(product.GST)
+                $('#ServiceTax').val(product.ServiceTax)
+                $('#FinalPrice').val(product.FinalPrice)
+                //$('#DisplayAtHomePage').val(product.DisplayAtHomePage)
+                //$('#IsActive').val(product.IsActive)
+                if (product.DisplayAtHomePage)
+                    $('#DisplayAtHomePage').prop("checked")
+
+                if(product.IsActive)
+                    $('#IsActive').prop("checked")
+                debugger;
+                // load product image data table
+                if (product.productImages.length > 0) {
+                    productsImages = product.productImages
+                    loadProductImagesDataTable();
+                }
+
+            }
+        });
+    }
+    function loadProductImagesDataTable() {
+        $('#tblProductImages').DataTable({
+            "destroy":true,
+            "ordering": true,
+            "bJQueryUI": true,
+            "sPaginationType": "full_numbers",
+            "sDom": '<""l>t<"F"fp>',
+            "data": productsImages,
+            "searching": true,
+            "columns": [
+                { 'data': 'ImageID', "name": "ImageID" },
+                { 'data': 'Caption', "name": "Caption" },
+                { 'data': 'Priority', "name": "Priority" },
+                { 'data': 'IsActive', "name": "IsActive" },
+                {
+                    "render": function (data, type, obj, meta) {
+                        return `<img src='` + obj.productImagePath + `' class="span3"  >`;
+                    }
+                },
+                {
+                    "render": function (data, type, obj, meta) {
+                        return `<a class="btn btn-primary" href="#" onclick="javascript:editSubCategory(event,'` + obj.ID + `')">Edit</a>
+
+                            `;
+                    }
+                },
+            ]
+
+        });
+    }
     function uploadImage() {
-       
-        var formdata = new FormData(); //FormData object 
-        var fileInput = document.getElementById('imageFile');  
+
+        var formdata = new FormData(); //FormData object
+        var fileInput = document.getElementById('imageFile');
         //Iterating through each files selected in fileInput
         for (i = 0; i < fileInput.files.length; i++) {
             //Appending each file to FormData object
@@ -31,59 +104,34 @@
         //formdata.append("caption", $('#Caption').val())
         //formdata.append("priority", $('#Priority').val())
         //formdata.append("isActive", $('#IsActiveImage').val())
-         
-       
-        
+
+
+
         var objArr = [];
 
         formdata.append("Caption", $('#Caption').val());
-        formdata.append("Priority", $('#Priority').val()); 
+        formdata.append("Priority", $('#Priority').val());
 
         //JSON obj
         formdata.append('objArr', objArr);
-           
+
         $.ajax({
             url: '/Admin/UploadImage',
-            type: "POST", 
-            processData: false, // Not to process data  
+            type: "POST",
+            processData: false, // Not to process data
             data: formdata,
             contentType:  false,
-            success: function (result) { 
-                $('#tblProductImages').DataTable({
-                    "ordering": true,
-                    "bJQueryUI": true,
-                    "sPaginationType": "full_numbers",
-                    "sDom": '<""l>t<"F"fp>',
-                    "data": result.productImages,
-                    "searching": true,
-                    "columns": [
-                        { 'data': 'ImageID', "name": "ImageID" },
-                        { 'data': 'Caption', "name": "Caption" },
-                        { 'data': 'Priority', "name": "Priority" },
-                        { 'data': 'IsActive', "name": "IsActive" }, 
-                        {
-                            "render": function (data, type, obj, meta) {
-                                return `<img src='` + obj.productImagePath +`' class="span11"  >`;
-                            }
-                        },
-                        {
-                            "render": function (data, type, obj, meta) {
-                                return `<a class="btn btn-primary" href="#" onclick="javascript:editSubCategory(event,'` + obj.ID + `')">Edit</a>
-                            
-                            `;
-                            }
-                        },
-                    ]
-
-                });
+            success: function (result) {
+                productsImages = result.productImages
+                loadProductImagesDataTable();
             },
             error: function (err) {
                 alert(err.statusText);
-            }  
+            }
         });
 
-       
-         
+
+
     }
     $(document).ready(function () {
         //bindSubCategory($('#CategoryID'));
@@ -92,33 +140,51 @@
             uploadImage()
         })
         var productsData = "";
+        var productsImages = "";
         var category = null;
         $.ajax({
             url: "/Bind/BindProducts",
             type: "POST",
             datatype: "json",
-            success: function (data) { 
+            success: function (data) {
                 productsData = data;
-                loadDataTable();
+                loadProductsDataTable();
             },
         });
 
-        function loadDataTable() {
+        function loadProductsDataTable() {
             $('#tblProducts').DataTable({
+                "destroy":true,
                 "ordering": true,
-                "bJQueryUI": true,
-                "sPaginationType": "full_numbers",
-                "sDom": '<""l>t<"F"fp>',
+                //"bJQueryUI": true,
+                //"sPaginationType": "full_numbers",
+                //"sDom": '<""l>t<"F"fp>',
+                "scrollX": true,
+                "PaginationType": "full",
+                "scrollCollapse": true,
                 "data": productsData.products,
                 "searching": true,
+                "fixedColumns": {
+                   "rightColumns": 1
+                },
+                "dom":"Blfrtip",
                 "columns": [
                     { 'data': 'ProductId', "name": "ProductId" },
                     { 'data': 'ProductName', "name": "ProductName" },
+                    { 'data': 'ProductDescription', "name": "ProductDescription" },
+                    { 'data': 'ProductSize', "name": "ProductSize" },
+                    { 'data': 'ProductWeight', "name": "ProductWeight" },
+                    { 'data': 'BasePrice', "name": "BasePrice" },
+                    { 'data': 'ShippingCharges', "name": "ShippingCharges" },
+                    { 'data': 'GST', "name": "GST" },
+                    { 'data': 'ServiceTax', "name": "ServiceTax" },
+                    { 'data': 'FinalPrice', "name": "FinalPrice" },
+                    { 'data': 'DisplayAtHomePage', "name": "DisplayAtHomePage" },
                     { 'data': 'IsActive', "name": "IsActive" },
                     {
                         "render": function (data, type, obj, meta) {
-                            return `<a class="btn btn-primary" href="#" onclick="javascript:editCategory(event,'` + obj.ProductID + `')">Edit</a>
-                          
+                            return `<a class="btn btn-primary" href="#" onclick="javascript:editProduct(event,'` + obj.ProductId + `')">Edit</a>
+
                             `;
                         }
                     },
@@ -130,9 +196,9 @@
     //  <a class="btn btn-danger" href="#" onclick="javascript:deleteCategory(event,'` + obj.ProductID + `')">Delete</a>
     })
 </script>
- 
+
 <div class="container-fluid">
- 
+
     <div class="row-fluid">
         <div class="span12">
             <div class="widget-box">
@@ -147,15 +213,14 @@
                             <label class="control-label">Category :</label>
                             <div class="controls">
                                 @Html.HiddenFor(a => a.ProductId)
-                                @Html.DropDownListFor(a => a.CategoryID, new SelectList((new ECommApplication.Models.SubCategory().getCategories()), "CategoryID", "CategoryName"), "--Select--", new { @onchange = "bindSubCategory(this)" })
-                                
+                                @Html.DropDownListFor(a => a.subCategory.category.CategoryID, new SelectList((new ECommApplication.Models.SubCategory().getCategories()), "CategoryID", "CategoryName"), "--Select--", new { @onchange = "bindSubCategory()", @id = "CategoryID" })
+
                             </div>
                         </div>
-
                         <div class="control-group span5">
                             <label class="control-label">Sub Category :</label>
                             <div class="controls">
-                                @Html.DropDownListFor(a => a.SubCategoryID, new SelectList(string.Empty, "Value", "Text"), "--Select--")
+                                @Html.DropDownListFor(a => a.subCategory.SubCategoryID, new SelectList(string.Empty, "Value", "Text"), "--Select--", new { @id = "SubCategoryID" })
                             </div>
                         </div>
                         <div class="control-group span5">
@@ -234,7 +299,7 @@
                                 <div class="control-group ">
                                     <label class="control-label">Upload Image</label>
                                     <div class="controls">
-                                        <div class="uploader" id="uniform-undefined"><input type="file" size="19" style="opacity: 0;"  id="imageFile"><span class="filename">No file selected</span><span class="action">Choose File</span></div>
+                                        <div class="uploader" id="uniform-undefined"><input type="file" size="19" style="opacity: 0;" id="imageFile"><span class="filename">No file selected</span><span class="action">Choose File</span></div>
                                     </div>
                                 </div>
                                 <div class="control-group">
@@ -259,7 +324,6 @@
                                     <button type="submit" class="btn btn-success" id="btnSaveImage">Save Image</button>
                                     <button type="button" id="btnClear" class="btn btn-success" onclick="clearRecord()">Clear</button>
                                 </div>
-
                                 <div class="widget-box">
                                     <div class="widget-title">
                                         <span class="icon"><i class="icon-th"></i></span>
@@ -269,12 +333,12 @@
                                         <table class="table table-bordered data-table" id="tblProductImages">
                                             <thead>
                                                 <tr>
-                                                    <th>ID</th>
-                                                    <th>Caption</th>
-                                                    <th>Priority</th>
-                                                    <th>Active</th>
-                                                    <th>Image</th>
-                                                    <th></th>
+                                                    <th width="5%">ID</th>
+                                                    <th width="30%">Caption</th>
+                                                    <th width="10%">Priority</th>
+                                                    <th width="10%">Active</th>
+                                                    <th width="35%">Image</th>
+                                                    <th width="20%"></th>
                                                 </tr>
                                             </thead>
                                         </table>
@@ -282,41 +346,46 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="form-actions">
                             <button type="submit" class="btn btn-success" id="btnSave">Save</button>
                             <button type="button" id="btnClear" class="btn btn-success" onclick="clearRecord()">Clear</button>
                         </div>
-
                     </form>
                 </div>
             </div>
 
-
         </div>
         <hr />
-
         <div class="row-fluid">
-                <div class="span12">
-                    <div class="widget-box">
-                        <div class="widget-title">
-                            <span class="icon"><i class="icon-th"></i></span>
-                            <h5>Data table</h5>
-                        </div>
-                        <div class="widget-content nopadding">
-                            <table class="table table-bordered data-table" id="tblProducts">
-                                <thead>
-                                    <tr>
-                                        <th>Product ID</th>
-                                        <th>Product Name</th> 
-                                        <th>Active</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
+            <div class="span12">
+                <div class="widget-box">
+                    <div class="widget-title">
+                        <span class="icon"><i class="icon-th"></i></span>
+                        <h5>Products:</h5>
+                    </div>
+                    <div class="widget-content nopadding">
+                        <table class="table table-bordered data-table" id="tblProducts">
+                            <thead>
+                                <tr>
+                                    <th width="20px">Product ID</th>
+                                    <th width="300px">Product Name</th>
+                                    <th width="300px">Product Description</th>
+                                    <th width="20px">Product Size</th>
+                                    <th width="20px">Product Weight</th>
+                                    <th width="20px">Base Price</th>
+                                    <th width="20px">Shipping Charges</th>
+                                    <th width="20px">GST</th>
+                                    <th width="20px">Service Tax</th>
+                                    <th width="20px">Final Price</th>
+                                    <th width="100px">Display At Home Page</th>
+                                    <th width="20px">Active</th>
+                                    <th width="20px"></th>
+                                </tr>
+                            </thead>
+                        </table>
                     </div>
                 </div>
             </div>
+        </div>
     </div>
-    </div>
+</div>

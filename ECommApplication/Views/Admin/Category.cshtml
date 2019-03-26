@@ -4,11 +4,10 @@
 
     ViewBag.Title = "Category";
 }
-@*<script src="~/Content/AdminLayout/js/jquery.validate.js"></script>*@ 
-<script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script> 
+@*<script src="~/Content/AdminLayout/js/jquery.validate.js"></script>*@
+<script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 @*<script src="~/Content/AdminLayout/js/matrix.form_validation.js"></script>*@
-<script type="text/javascript">
-    function clearRecord() {
+<script type="text/javascript">function clearRecord() {
         $('#CategoryID').val('')
         $('#CategoryName').val('')
         $('#IsActive').val('')
@@ -23,7 +22,7 @@
             datatype: "json",
             success: function (data) {
                 console.log(data)
-                var category = data.data;
+                var category = data.category[0];
                 $('#CategoryID').val(category.CategoryID)
                 $('#CategoryName').val(category.CategoryName)
                 $('#IsActive').val(category.IsActive)
@@ -83,7 +82,7 @@
                     {
                         "render": function (data, type, obj, meta) {
                             return `<a class="btn btn-primary" href="#" onclick="javascript:editCategory(event,'` + obj.CategoryID + `')">Edit</a>
-                            
+
                             `;
                         }
                     },
@@ -92,11 +91,10 @@
             });
         }
     //<a class="btn btn-danger" href="#" onclick="javascript:deleteCategory(event,'` + obj.CategoryID + `')">Delete</a>
-    });
-</script>
- 
+    });</script>
+
 <div class="container-fluid">
- 
+
     <div class="row-fluid">
         <div class="span12">
             <div class="widget-box">
@@ -105,9 +103,7 @@
                     <h5>Category-info</h5>
                 </div>
                 <div class="widget-content nopadding">
-
                     <form action="/Admin/Category" method="post" class="form-horizontal">
-
                         @Html.AntiForgeryToken()
                         <div class="control-group">
                             <label class="control-label">Category Name :</label>
@@ -123,7 +119,6 @@
                                 @Html.CheckBoxFor(a => a.IsActive)
                             </div>
                         </div>
-
                         <div class="form-actions">
                             <button type="submit" class="btn btn-success" id="btnSave">Save</button>
                             <button type="button" id="btnClear" class="btn btn-success" onclick="clearRecord()">Clear</button>
@@ -131,7 +126,6 @@
                     </form>
                 </div>
             </div>
-
         </div>
     </div>
     <hr />
@@ -158,6 +152,4 @@
         </div>
     </div>
 </div>
-
-
 

@@ -17,7 +17,7 @@ namespace ECommApplication.Controllers
     public class AdminController : Controller
     {
         OnlineContext OC = null;
-        
+
         public AdminController()
         {
             OC = new OnlineContext();
@@ -47,21 +47,21 @@ namespace ECommApplication.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken] 
+        [ValidateAntiForgeryToken]
         public ActionResult Category(Category CA)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 int i = OC.Category(CA);
             }
-            
+
             return View(CA);
         }
 
         [HttpPost]
         public ActionResult DeleteCategory(string categoryId)
         {
-            
+
             if (Request.IsAjaxRequest())
             {
                 if (Request.QueryString["CategoryId"] != null)
@@ -101,7 +101,7 @@ namespace ECommApplication.Controllers
             if (ModelState.IsValid)
             {
                 int i = OC.SubCategory(SC);
-                
+
             }
             return View(SC);
         }
@@ -146,19 +146,14 @@ namespace ECommApplication.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Product(Product product)
         {
+            ModelState.Remove("subCategory.category.CategoryName");
+            ModelState.Remove("subCategory.SubCategoryName");
+            ModelState.Remove("subCategory.CategoryID");
             if (ModelState.IsValid)
             {
-                if(TempData["productImages"]!=null)
+                if (Session["productImages"] != null)
                 {
-                   // XmlSerializer xmlSer = new XmlSerializer(typeof(ProductImage));
-                   // //  product.productImages = TempData["productImages"] as List<ProductImage>;
-                   //// xmlSer.Serialize()
-                   // using (var stream = new StringWriter())
-                   // using (var writer = XmlWriter.Create(stream))
-                   // {
-                   //     xmlSer.Serialize(writer, TempData["productImages"]);
-              
-                   // }
+                    product.productImages = Session["productImages"] as List<ProductImage>;
                 }
 
                 //int i = OC.SubCategory(SC);
@@ -201,16 +196,16 @@ namespace ECommApplication.Controllers
                         {
                             fname = file.FileName;
                         }
-                       // prodImage.productImage = file;
+                        // prodImage.productImage = file;
                         // Get the complete folder path and store the file inside it.  
                         //fname = Path.Combine(Server.MapPath("~/TempFiles/"), fname);
                         // file.SaveAs(fname);
                         prodImage.productImagePath = "/TempFiles/" + fname;
                     }
-                    
+
                     productImages.Add(prodImage);
                     TempData["productImages"] = productImages;
-                    // Returns message that successfully uploaded  
+
                     return Json(new { productImages = productImages.ToList() }, JsonRequestBehavior.AllowGet);
                 }
                 catch (Exception ex)

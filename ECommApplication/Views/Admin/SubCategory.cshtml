@@ -1,10 +1,9 @@
 ﻿@model ECommApplication.Models.SubCategory
 @{
     ViewBag.Title = "SubCategory";
-} 
+}
 <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript">
-    function clearRecord() {
+<script type="text/javascript">function clearRecord() {
         $('#CategoryID').val('')
         $('#SubCategoryID').val('')
         $('#SubCategoryName').val('')
@@ -82,7 +81,7 @@
                     {
                         "render": function (data, type, obj, meta) {
                             return `<a class="btn btn-primary" href="#" onclick="javascript:editSubCategory(event,'` + obj.SubCategoryID + `')">Edit</a>
-                            
+
                             `;
                         }
                     },
@@ -91,10 +90,9 @@
             });
         }
    // <a class="btn btn-danger" href="#" onclick="javascript:deleteCategory(event,'` + obj.SubCategoryID + `')">Delete</a>
-    });
-</script> 
+    });</script>
 <div class="container-fluid">
- 
+
     <div class="row-fluid">
         <div class="span12">
             <div class="widget-box">
@@ -103,7 +101,6 @@
                     <h5>Sub-Category-info</h5>
                 </div>
                 <div class="widget-content nopadding">
-
                     <form action="/Admin/SubCategory" method="post" class="form-horizontal">
                         @Html.AntiForgeryToken()
                         <div class="control-group">
@@ -113,7 +110,7 @@
                                 @Html.ValidationMessageFor(a => a.CategoryID, "", new { @class = "help-inline" })
                             </div>
                         </div>
-                        
+
                         <div class="control-group">
                             <label class="control-label">Sub Category Name :</label>
                             <div class="controls">
@@ -128,7 +125,6 @@
                                 @Html.CheckBoxFor(a => a.IsActive)
                             </div>
                         </div>
-
                         <div class="form-actions">
                             <button type="submit" class="btn btn-success" id="btnSave">Save</button>
                             <button type="button" id="btnClear" class="btn btn-success" onclick="clearRecord()">Clear</button>
@@ -136,7 +132,6 @@
                     </form>
                 </div>
             </div>
-
         </div>
     </div>
     <hr />

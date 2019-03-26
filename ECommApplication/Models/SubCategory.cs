@@ -22,14 +22,14 @@ namespace ECommApplication.Models
 
         public bool IsActive { get; set; }
 
-        [Required(ErrorMessage = "Please Enter Sub Category Name")] 
+        [Required(ErrorMessage = "Please Enter Sub Category Name")]
         public string SubCategoryName { get; set; }
 
         public Category category { get; set; }
         public List<Category> getCategories()
         {
             List<Category> lstCategory = new List<Category>();
-            
+
             lstCategory = OC.getCategories(null);
             return lstCategory;
         }
