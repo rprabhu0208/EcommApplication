@@ -1,0 +1,83 @@
+USE [ECommApplication]
+GO
+/****** Object:  StoredProcedure [dbo].[INSERT_ProductImages]    Script Date: 03/27/2019 15:49:39 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		ROHAN
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+ALTER PROCEDURE [dbo].[INSERT_ProductImages] 
+	-- Add the parameters for the stored procedure here
+	 @ProductID int, 
+	 @xmlProducts XML = null
+AS
+BEGIN
+	 SET NOCOUNT ON;
+
+  IF ((@xmlProducts IS NOT NULL)
+    AND (@xmlProducts.exist('//ArrayOfProductImage') <> 0))
+  BEGIN
+    IF OBJECT_ID('tempdb..#tTemp1') IS NOT NULL
+      DROP TABLE #tTemp1;
+	   
+	  
+    CREATE TABLE #tTemp1 (
+		ProductImageID int,
+      IsActive		bit,
+      [Priority]		bit,
+      Caption           VARCHAR(100),
+      ProductImagePath             VARCHAR(100),
+        ProductID       int,
+    ) 
+    INSERT INTO #tTemp1
+   
+   SELECT 
+   
+		prd.value('(ProductImageID)[1]', 'int'),
+        prd.value('(IsActive)[1]', 'bit'),
+        prd.value('(Priority)[1]', 'int'),
+        prd.value('(Caption)[1]', 'nvarchar(100)'), 
+         prd.value('(productImagePath)[1]', 'nvarchar(100)'),
+         @ProductID
+        FROM @xmlProducts.nodes('//ArrayOfProductImage//ProductImage') AS xmlProducts (prd)
+	;
+		
+	 DELETE FROM ProductImage where ProductId = @ProductID
+
+	--INSERT  INTO ProductImage () 
+	INSERT INTO  ProductImage (ProductID,ImagePath,Caption,IsActive,[Priority])
+	 SELECT ProductID, ProductImagePath,Caption, IsActive,[Priority] FROM #tTemp1 
+	
+	
+	 -- SELECT * FROM #tTemp1    
+	  
+	 -- begin
+		--merge ProductImage as p
+		--using #tTemp1 as t
+		--on (p.ProductImageID = t.ProductImageID and p.ProductID = t.ProductID)
+		--when not matched by target 
+		--then insert (Caption,IsActive, [Priority], ImagePath,ProductID) 
+		--values (t.Caption,t.IsActive, t.[Priority], t.ProductImagePath,ProductID) 
+		--when matched 
+		--then update set 
+		--p.Caption = t.Caption ,
+		--p.IsActive = t.IsActive, 
+		--p.[Priority]= t.[Priority], 
+		--p.ImagePath = t.ProductImagePath,
+		--p.ProductID  = t.ProductID
+		--WHEN NOT MATCHED  BY SOURCE THEN 
+		--DELETE   ;
+		
+		-- AND EXISTS(SELECT 1 FROM dbo.Vals iVals WHERE target.LeftId = iVals.LeftId) THEN
+	  --end
+	       
+    IF OBJECT_ID('tempdb..#tTemp1') IS NOT NULL
+      DROP TABLE #tTemp1;
+	  --select * from ProductImage
+  END
+
+END
