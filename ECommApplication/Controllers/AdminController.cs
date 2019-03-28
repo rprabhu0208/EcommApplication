@@ -17,7 +17,7 @@ namespace ECommApplication.Controllers
     public class AdminController : Controller
     {
         OnlineContext OC = null;
-
+        Random rndProductImageId = new Random();
         public AdminController()
         {
             OC = new OnlineContext();
@@ -167,15 +167,16 @@ namespace ECommApplication.Controllers
         public ActionResult UploadImage(ProductImage prodImage)
         {
             List<ProductImage> productImages = null;
-            if (TempData["productImages"] != null)
-                productImages = TempData["productImages"] as List<ProductImage>;
+            if (Session["productImages"] != null)
+                productImages = Session["productImages"] as List<ProductImage>;
             else
                 productImages = new List<ProductImage>();
 
-            if (Request.Files.Count > 0)
+            try
             {
-                try
+                if (Request.Files.Count > 0)
                 {
+
                     //  Get all files from Request object  
                     HttpFileCollectionBase files = Request.Files;
                     for (int i = 0; i < files.Count; i++)
@@ -198,24 +199,37 @@ namespace ECommApplication.Controllers
                         }
                         // prodImage.productImage = file;
                         // Get the complete folder path and store the file inside it.  
-                        //fname = Path.Combine(Server.MapPath("~/TempFiles/"), fname);
+                        // fname = Path.Combine(Server.MapPath("~/TempFiles/"), fname);
                         // file.SaveAs(fname);
                         prodImage.productImagePath = "/TempFiles/" + fname;
                     }
 
-                    productImages.Add(prodImage);
-                    TempData["productImages"] = productImages;
+                }
 
-                    return Json(new { productImages = productImages.ToList() }, JsonRequestBehavior.AllowGet);
-                }
-                catch (Exception ex)
+                if (prodImage.ProductImageID > 0)
                 {
-                    return Json("Error occurred. Error details: " + ex.Message);
+                    productImages.Where(P => P.ProductImageID == prodImage.ProductImageID)
+                        .Select(S => {
+                            S.Caption = prodImage.Caption;
+                            S.IsActive = prodImage.IsActive;
+                            S.productImagePath = prodImage.productImagePath;
+                            S.Priority = prodImage.Priority;
+                            return S;
+                        }).ToList();
                 }
+                else
+                {
+                    prodImage.ProductImageID = productImages.Count() + 1;
+                    productImages.Add(prodImage);
+                }
+
+                Session["productImages"] = productImages;
+
+                return Json(new { productImages = productImages.ToList() }, JsonRequestBehavior.AllowGet);
             }
-            else
+            catch (Exception ex)
             {
-                return Json("No files selected.");
+                return Json("Error occurred. Error details: " + ex.Message);
             }
         }
 
@@ -228,6 +242,5 @@ namespace ECommApplication.Controllers
         {
             return View();
         }
-
     }
 }

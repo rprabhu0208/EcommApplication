@@ -9,7 +9,7 @@
         $.ajax({
             url: "/Bind/BindSubCategory",
             type: "Get",
-            data: { 'CategoryID': categoryID},
+            data: { 'CategoryID': categoryID },
             datatype: "json",
             success: function (data) {
                 $("#SubCategoryID").children('option:not(:first)').remove();
@@ -34,7 +34,7 @@
                 var product = data.products[0];
                 $('#CategoryID').val(product.subCategory.category.CategoryID)
                 bindSubCategory(product.subCategory.SubCategoryID)
-              //  $('#SubCategoryID').val(product.subCategory.SubCategoryID)
+                //  $('#SubCategoryID').val(product.subCategory.SubCategoryID)
                 $('#ProductId').val(product.ProductId)
                 $('#ProductName').val(product.ProductName)
                 $('#ProductDescription').val(product.ProductDescription)
@@ -50,7 +50,7 @@
                 if (product.DisplayAtHomePage)
                     $('#DisplayAtHomePage').prop("checked")
 
-                if(product.IsActive)
+                if (product.IsActive)
                     $('#IsActive').prop("checked")
                 debugger;
                 // load product image data table
@@ -62,9 +62,45 @@
             }
         });
     }
+
+    function editProductImage(e, productImageId) {
+        e.preventDefault();
+
+        $.ajax({
+            url: "/Bind/BindProductImage",
+            type: "Get",
+            data: { 'ProductImageID': productImageId },
+            datatype: "json",
+            success: function (data) {
+                debugger;
+                console.log(data)
+
+                //$('#CategoryID').val(product.subCategory.category.CategoryID)
+                //bindSubCategory(product.subCategory.SubCategoryID)
+                ////  $('#SubCategoryID').val(product.subCategory.SubCategoryID)
+                $('#ProductImageID').val(data.productImage.ProductImageID)
+                $('#Caption').val(data.productImage.Caption)
+                $('#productImagePath').val(data.productImage.productImagePath)
+                $('#ImagePriority').val(data.productImage.Priority)
+                //if (product.DisplayAtHomePage)
+                //    $('#DisplayAtHomePage').prop("checked")
+
+                if (data.productImage.IsActive)
+                    $('#IsActiveImage').prop("checked")
+                //debugger;
+                //// load product image data table
+                //if (product.productImages.length > 0) {
+                //    productsImages = product.productImages
+                //    loadProductImagesDataTable();
+                //}
+
+            }
+        });
+    }
+
     function loadProductImagesDataTable() {
         $('#tblProductImages').DataTable({
-            "destroy":true,
+            "destroy": true,
             "ordering": true,
             "bJQueryUI": true,
             "sPaginationType": "full_numbers",
@@ -72,7 +108,7 @@
             "data": productsImages,
             "searching": true,
             "columns": [
-                { 'data': 'ImageID', "name": "ImageID" },
+                { 'data': 'ProductImageID', "name": "ProductImageID" },
                 { 'data': 'Caption', "name": "Caption" },
                 { 'data': 'Priority', "name": "Priority" },
                 { 'data': 'IsActive', "name": "IsActive" },
@@ -83,7 +119,7 @@
                 },
                 {
                     "render": function (data, type, obj, meta) {
-                        return `<a class="btn btn-primary" href="#" onclick="javascript:editSubCategory(event,'` + obj.ID + `')">Edit</a>
+                        return `<a class="btn btn-primary" href="#" onclick="javascript:editProductImage(event,'` + obj.ProductImageID + `')">Edit</a>
 
                             `;
                     }
@@ -110,8 +146,11 @@
         var objArr = [];
 
         formdata.append("Caption", $('#Caption').val());
-        formdata.append("Priority", $('#Priority').val());
-
+        formdata.append("Priority", $('#ImagePriority').val());
+        formdata.append("IsActive", $('#IsActiveImage').prop('checked') ? true : false)
+        formdata.append("ProductID", $('#ProductId').val())
+        formdata.append("ProductImageID", $('#ProductImageID').val())
+        formdata.append("productImagePath", $('#productImagePath').val())
         //JSON obj
         formdata.append('objArr', objArr);
 
@@ -120,7 +159,7 @@
             type: "POST",
             processData: false, // Not to process data
             data: formdata,
-            contentType:  false,
+            contentType: false,
             success: function (result) {
                 productsImages = result.productImages
                 loadProductImagesDataTable();
@@ -154,7 +193,7 @@
 
         function loadProductsDataTable() {
             $('#tblProducts').DataTable({
-                "destroy":true,
+                "destroy": true,
                 "ordering": true,
                 //"bJQueryUI": true,
                 //"sPaginationType": "full_numbers",
@@ -165,9 +204,9 @@
                 "data": productsData.products,
                 "searching": true,
                 "fixedColumns": {
-                   "rightColumns": 1
+                    "rightColumns": 1
                 },
-                "dom":"Blfrtip",
+                "dom": "Blfrtip",
                 "columns": [
                     { 'data': 'ProductId', "name": "ProductId" },
                     { 'data': 'ProductName', "name": "ProductName" },
@@ -192,13 +231,11 @@
 
             });
         }
-    //<a class="btn btn-danger" href="#" onclick="javascript:deleteCategory(event,'` + obj.ID + `')">Delete</a>
-    //  <a class="btn btn-danger" href="#" onclick="javascript:deleteCategory(event,'` + obj.ProductID + `')">Delete</a>
+        //<a class="btn btn-danger" href="#" onclick="javascript:deleteCategory(event,'` + obj.ID + `')">Delete</a>
+        //  <a class="btn btn-danger" href="#" onclick="javascript:deleteCategory(event,'` + obj.ProductID + `')">Delete</a>
     })
 </script>
-
 <div class="container-fluid">
-
     <div class="row-fluid">
         <div class="span12">
             <div class="widget-box">
@@ -214,7 +251,6 @@
                             <div class="controls">
                                 @Html.HiddenFor(a => a.ProductId)
                                 @Html.DropDownListFor(a => a.subCategory.category.CategoryID, new SelectList((new ECommApplication.Models.SubCategory().getCategories()), "CategoryID", "CategoryName"), "--Select--", new { @onchange = "bindSubCategory()", @id = "CategoryID" })
-
                             </div>
                         </div>
                         <div class="control-group span5">
@@ -305,13 +341,15 @@
                                 <div class="control-group">
                                     <label class="control-label">Caption :</label>
                                     <div class="controls">
+                                        <input type="hidden" id="ProductImageID" />
+                                        <input type="hidden" id="productImagePath" />
                                         <input type="text" id="Caption" name="Caption" />
                                     </div>
                                 </div>
                                 <div class="control-group">
                                     <label class="control-label">Priority :</label>
                                     <div class="controls">
-                                        <input type="text" id="Priority" name="Priority" />
+                                        <input type="text" id="ImagePriority" name="ImagePriority" />
                                     </div>
                                 </div>
                                 <div class="control-group">
@@ -353,7 +391,6 @@
                     </form>
                 </div>
             </div>
-
         </div>
         <hr />
         <div class="row-fluid">

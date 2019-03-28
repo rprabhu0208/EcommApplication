@@ -1,46 +1,62 @@
 ﻿@model ECommApplication.Models.UserLogin
 @{
-    Layout = "~/Views/Shared/_AccountLayout.cshtml";
+    Layout = null;
 }
 
 <!DOCTYPE html>
-
 <html>
 <head>
+    <link href="~/Content/AdminLayout/css/styleV4.css" rel="stylesheet" />
     <meta name="viewport" content="width=device-width" />
     <title>AdminLogin</title>
 </head>
 <body>
-    <div>
-        <div class="span12">
-            <div class="widget-box">
-                <div class="widget-title">
-                    <span class="icon"> <i class="icon-info-sign"></i> </span>
-                    <h5>Login</h5>
-                </div>
-                <div class="widget-content nopadding">
-                    <form class="form-horizontal" method="post" action="/Account/AdminLogin"  >
-                        <div class="control-group">
-                            <label class="control-label">Username</label>
-                            <div class="controls">
-                                @Html.TextBoxFor(a => a.UserName, new { @maxlength = "100" })
-                                @Html.ValidationMessageFor(a => a.UserName, "", new { @class = "help-inline" })
+    <div class="main-wrapper">
+        <div class="auth-wrapper d-flex no-block justify-content-center align-items-center bg-dark">
+            <div class="auth-box bg-dark border-top border-bottom border-secondary">
+                <div id="loginform">
+                    <div class="text-center p-t-20 p-b-20">
+                        @*<span class="db"><img src="../../assets/images/logo.png" alt="logo" /></span>*@
+                    </div>
+                    <!-- Form -->
+                    <form class="form-horizontal m-t-20" id="loginform" method="post" action="/Account/AdminLogin">
+                        <div class="row p-b-30">
+                            <div class="col-12">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-success text-white" id="basic-addon1"><i class="icon-user"></i></span>
+                                    </div>
+                                    @Html.TextBoxFor(a => a.UserName, new { @maxlength = "100", @class = "form-control form-control-lg", @placeholder = "Username" })
+
+                                    @*<input type="text" class="form-control form-control-lg" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1" required="">*@
+                                </div>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text bg-warning text-white" id="basic-addon2"><i class="icon-edit"></i></span>
+                                    </div>
+                                    @Html.PasswordFor(a => a.UserPassword, new { @maxlength = "100", @class = "form-control form-control-lg", @placeholder = "Password" })
+
+                                    @*<input type="text" class="form-control form-control-lg" placeholder="Password" aria-label="Password" aria-describedby="basic-addon1" required="">*@
+                                </div>
                             </div>
                         </div>
-                        <div class="control-group">
-                            <label class="control-label">Password</label>
-                            <div class="controls"> 
-                                @Html.PasswordFor(a => a.UserPassword, new { @maxlength = "100"   })
-                                @Html.ValidationMessageFor(a => a.UserPassword, "", new { @class = "help-inline" })
+                        <div class="row border-top border-secondary">
+                            <div class="col-12" style="padding-top:20px">
+                                <div class="form-group">
+                                    <div class="p-t-20">
+                                        @*<button class="btn btn-info" id="to-recover" type="button"><i class="fa fa-lock m-r-5"></i> Lost password?</button>*@
+                                        <button class="btn btn-success float-right" type="submit">Login</button>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-actions">
-                            <input type="submit" value="Login" class="btn btn-success">
                         </div>
                     </form>
                 </div>
+
             </div>
         </div>
+
     </div>
+
 </body>
 </html>

@@ -37,6 +37,20 @@ namespace ECommApplication.Controllers
                 Session["productImages"] = lstProducts[0].productImages;
             return Json(new { products = lstProducts }, JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult BindProductImage(ProductImage productImage)
+        {
+            List<ProductImage> lstProductImages = new List<ProductImage>();
+            if (Session["productImages"] != null)
+                lstProductImages = Session["productImages"] as List<ProductImage>;
+
+            if (productImage.ProductImageID > 0)
+            {
+                productImage = lstProductImages.Where(x => x.ProductImageID == productImage.ProductImageID).SingleOrDefault();
+            }
+
+            return Json(new { productImage = productImage }, JsonRequestBehavior.AllowGet);
+        }
         public ActionResult Index()
         {
             return View();

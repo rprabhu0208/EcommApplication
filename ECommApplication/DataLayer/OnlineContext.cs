@@ -384,17 +384,18 @@ namespace ECommApplication.DataLayer
                         if (ds.Tables.Count > 1)
                         {
                             lstProducts[0].productImages = new List<ProductImage>();
-
+                            int i = 1;
                             foreach (DataRow dr in ds.Tables[1].Rows)
                             {
                                 lstProducts[0].productImages.Add(
                                     new ProductImage()
                                     {
-                                        ImageID = Convert.ToInt32(dr["ProductImageID"]),
+                                        ProductImageID = i++, //Convert.ToInt32(dr["ProductImageID"]),
                                         Priority = Convert.ToInt32(dr["Priority"]),
                                         IsActive = Convert.ToBoolean(dr["IsActive"]),
                                         Caption = Convert.ToString(dr["Caption"]),
-                                        productImagePath = Convert.ToString(dr["ImagePath"])
+                                        productImagePath = Convert.ToString(dr["ImagePath"]),
+                                        ProductID = (int)product.ProductId
                                     });
                             }
                         }
