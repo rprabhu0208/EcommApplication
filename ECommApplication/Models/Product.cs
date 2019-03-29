@@ -14,8 +14,8 @@ namespace ECommApplication.Models
         [DataType(DataType.Text)]
         public string ProductName { get; set; }
 
-        public bool IsActive { get; set; }
-        public bool DisplayAtHomePage { get; set; }
+        public string IsActive { get; set; }
+        public string DisplayAtHomePage { get; set; }
 
         public string CreatedBy { get; set; }
         public DateTime CreatedDate { get; set; }
@@ -64,6 +64,8 @@ namespace ECommApplication.Models
         public List<ProductImage> productImages { get; set; }
 
         public SubCategory subCategory { get; set; }
+
+        public int ProductQty { get; set; }
 
     }
 

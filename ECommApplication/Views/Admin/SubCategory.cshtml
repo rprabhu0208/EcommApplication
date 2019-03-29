@@ -2,13 +2,23 @@
 @{
     ViewBag.Title = "SubCategory";
 }
-<script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript">function clearRecord() {
-        $('#CategoryID').val('')
-        $('#SubCategoryID').val('')
-        $('#SubCategoryName').val('')
-        $('#IsActive').val('')
-        $('#btnSave').text('Save').addClass('btn-success').removeClass('btn-warning');
+@*<script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>*@
+<script type="text/javascript">
+
+    function clearRecord() {
+        var isValid = @Html.Raw(Json.Encode(ViewData.ModelState.IsValid)) ;
+
+        if (isValid) {
+            $('#CategoryID').val('')
+            $('#SubCategoryID').val('')
+            $('#SubCategoryName').val('')
+            $('#IsActive').val('')
+            $('#btnSave').text('Save').addClass('btn-success').removeClass('btn-warning');
+        }
+
+        if (parseInt($('#SubCategoryID').val()) > 0)
+            $('#btnSave').text('Update').removeClass('btn-success').addClass('btn-warning')
+
     }
     function editSubCategory(e, categoryId) {
         e.preventDefault();
@@ -54,7 +64,7 @@
     $(document).ready(function () {
         var categoryData = "";
         var category = null;
-        //clearRecord();
+        clearRecord();
         $.ajax({
             url: "/Bind/BindSubCategory",
             type: "POST",
@@ -71,15 +81,16 @@
                 "bJQueryUI": true,
                 "sPaginationType": "full_numbers",
                 "sDom": '<""l>t<"F"fp>',
-                "data": categoryData.subcategory,
+                "aaData": categoryData.subcategory,
                 "searching": true,
-                "columns": [
-                    { 'data': 'SubCategoryID', "name": "SubCategoryID" },
-                    { 'data': 'category.CategoryName', "name": "CategoryName" },
-                    { 'data': 'SubCategoryName', "name": "SubCategoryName" },
-                    { 'data': 'IsActive', "name": "IsActive" },
+                "aoColumns": [
+                    { 'mData': 'SubCategoryID', "name": "SubCategoryID" },
+                    { 'mData': 'category.CategoryName', "name": "CategoryName" },
+                    { 'mData': 'SubCategoryName', "name": "SubCategoryName" },
+                    { 'mData': 'IsActive', "name": "IsActive" },
                     {
-                        "render": function (data, type, obj, meta) {
+                        'mData': null,
+                        "mRender": function (data, type, obj) {
                             return `<a class="btn btn-primary" href="#" onclick="javascript:editSubCategory(event,'` + obj.SubCategoryID + `')">Edit</a>
 
                             `;
@@ -92,7 +103,6 @@
    // <a class="btn btn-danger" href="#" onclick="javascript:deleteCategory(event,'` + obj.SubCategoryID + `')">Delete</a>
     });</script>
 <div class="container-fluid">
-
     <div class="row-fluid">
         <div class="span12">
             <div class="widget-box">
@@ -110,7 +120,6 @@
                                 @Html.ValidationMessageFor(a => a.CategoryID, "", new { @class = "help-inline" })
                             </div>
                         </div>
-
                         <div class="control-group">
                             <label class="control-label">Sub Category Name :</label>
                             <div class="controls">
@@ -122,7 +131,9 @@
                         <div class="control-group">
                             <label class="control-label">Is Active :</label>
                             <div class="controls">
-                                @Html.CheckBoxFor(a => a.IsActive)
+                                @Html.DropDownListFor(a => a.IsActive, ECommApplication.Common.CommonFunctions.SelectListYesNo(), "--Select--")
+                                @Html.ValidationMessageFor(a => a.IsActive, "", new { @class = "help-inline" })
+
                             </div>
                         </div>
                         <div class="form-actions">
@@ -140,10 +151,10 @@
             <div class="widget-box">
                 <div class="widget-title">
                     <span class="icon"><i class="icon-th"></i></span>
-                    <h5>Data table</h5>
+                    <h5>Sub Categories</h5>
                 </div>
                 <div class="widget-content nopadding">
-                    <table class="table table-bordered data-table" id="tblCategory">
+                    <table class="table table-bordered" id="tblCategory">
                         <thead>
                             <tr>
                                 <th>Sub Category ID</th>

@@ -88,7 +88,7 @@ namespace ECommApplication.DataLayer
                     category = new Category();
                     category.CategoryID = Convert.ToInt32(ds.Tables[0].Rows[0]["CategoryID"]);
                     category.CategoryName = Convert.ToString(ds.Tables[0].Rows[0]["CategoryName"]);
-                    category.IsActive = Convert.ToBoolean(ds.Tables[0].Rows[0]["IsActive"]);
+                    category.IsActive = Convert.ToString(ds.Tables[0].Rows[0]["IsActive"]);
                 }
             }
             catch (Exception ex)
@@ -124,7 +124,7 @@ namespace ECommApplication.DataLayer
                         {
                             CategoryID = Convert.ToInt32(dr["CategoryID"]),
                             CategoryName = Convert.ToString(dr["CategoryName"]),
-                            IsActive = Convert.ToBoolean(dr["IsActive"])
+                            IsActive = Convert.ToString(dr["IsActive"])
                         });
                     }
 
@@ -217,7 +217,7 @@ namespace ECommApplication.DataLayer
                     subCategory = new SubCategory();
                     subCategory.SubCategoryID = Convert.ToInt32(ds.Tables[0].Rows[0]["SubCategoryID"]);
                     subCategory.SubCategoryName = Convert.ToString(ds.Tables[0].Rows[0]["SubCategoryName"]);
-                    subCategory.IsActive = Convert.ToBoolean(ds.Tables[0].Rows[0]["IsActive"]);
+                    subCategory.IsActive = Convert.ToString(ds.Tables[0].Rows[0]["IsActive"]);
                     subCategory.category = new Category()
                     {
                         CategoryID = Convert.ToInt32(ds.Tables[0].Rows[0]["CategoryID"]),
@@ -260,7 +260,7 @@ namespace ECommApplication.DataLayer
                             //   CategoryID = Convert.ToInt32(dr["CategoryID"]),
                             SubCategoryID = Convert.ToInt32(dr["SubCategoryID"]),
                             SubCategoryName = Convert.ToString(dr["SubCategoryName"]),
-                            IsActive = Convert.ToBoolean(dr["IsActive"]),
+                            IsActive = Convert.ToString(dr["IsActive"]),
                             category = new Category()
                             {
                                 CategoryID = Convert.ToInt32(dr["CategoryID"]),
@@ -301,7 +301,7 @@ namespace ECommApplication.DataLayer
                 // Returns message that successfully uploaded  
                 if (prd.productImages != null && prd.productImages.Count > 0)
                 {
-                    prdXML = CommonFunctions.convertObjectListToXML<ProductImage>(prd.productImages);
+                    prdXML = CommonFunctions.ConvertObjectListToXML<ProductImage>(prd.productImages);
                 }
                 Object[] param = new Object[14];
                 param[0] = prd.subCategory.SubCategoryID;
@@ -310,7 +310,7 @@ namespace ECommApplication.DataLayer
                 param[3] = prd.IsActive;
                 param[4] = prd.DisplayAtHomePage;
                 param[5] = prd.ProductDescription;
-                param[6] = prd.ProductSize;
+                param[6] = prd.ProductQty;
                 param[7] = prd.ProductWeight;
                 param[8] = prd.BasePrice;
                 param[9] = prd.GST;
@@ -357,15 +357,15 @@ namespace ECommApplication.DataLayer
                             ProductId = Convert.ToInt32(dr["ProductID"]),
                             ProductName = Convert.ToString(dr["ProductName"]),
                             ProductDescription = Convert.ToString(dr["ProductDescription"]),
-                            ProductSize = Convert.ToString(dr["ProductSize"]),
+                            ProductQty = Convert.ToInt32(dr["ProductQty"]),
                             ProductWeight = Convert.ToString(dr["ProductWeight"]),
                             BasePrice = Convert.ToDecimal(dr["BasePrice"]),
                             ShippingCharges = Convert.ToDecimal(dr["ShippingCharges"]),
                             GST = Convert.ToDecimal(dr["GST"]),
                             ServiceTax = Convert.ToDecimal(dr["ServiceTax"]),
                             FinalPrice = Convert.ToDecimal(dr["FinalPrice"]),
-                            DisplayAtHomePage = Convert.ToBoolean(dr["DisplayAtHomePage"]),
-                            IsActive = Convert.ToBoolean(dr["IsActive"]),
+                            DisplayAtHomePage = Convert.ToString(dr["DisplayAtHomePage"]),
+                            IsActive = Convert.ToString(dr["IsActive"]),
                             subCategory = new SubCategory()
                             {
                                 SubCategoryID = Convert.ToInt32(dr["SubCategoryID"]),
@@ -392,9 +392,10 @@ namespace ECommApplication.DataLayer
                                     {
                                         ProductImageID = i++, //Convert.ToInt32(dr["ProductImageID"]),
                                         Priority = Convert.ToInt32(dr["Priority"]),
-                                        IsActive = Convert.ToBoolean(dr["IsActive"]),
+                                        IsActive = Convert.ToString(dr["IsActive"]),
                                         Caption = Convert.ToString(dr["Caption"]),
-                                        productImagePath = Convert.ToString(dr["ImagePath"]),
+                                        ProductImagePath = Convert.ToString(dr["ImagePath"]),
+                                        DisplayAtHomePage = Convert.ToString(dr["DisplayAtHomePage"]),
                                         ProductID = (int)product.ProductId
                                     });
                             }

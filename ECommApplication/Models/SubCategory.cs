@@ -20,7 +20,8 @@ namespace ECommApplication.Models
         [Required(ErrorMessage = "Please Select Category")]
         public int? CategoryID { get; set; }
 
-        public bool IsActive { get; set; }
+        [Required(ErrorMessage = "Please Select Sub Cateogory Status")]
+        public string IsActive { get; set; }
 
         [Required(ErrorMessage = "Please Enter Sub Category Name")]
         public string SubCategoryName { get; set; }

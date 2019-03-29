@@ -11,9 +11,11 @@ namespace ECommApplication.Models
 
         public int ProductID { get; set; }
         public HttpPostedFileBase productImage { get; set; }
-        public bool IsActive { get; set; }
+        public string IsActive { get; set; }
         public int Priority { get; set; }
         public string Caption { get; set; }
-        public string productImagePath { get; set; }
+        public string ProductImagePath { get; set; }
+
+        public string DisplayAtHomePage { get; set; }
     }
 }

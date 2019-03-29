@@ -2,9 +2,8 @@
 @{
     ViewBag.Title = "Product";
 }
-<script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript">
-    function bindSubCategory(subCategory) {
+@*<script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>*@
+<script type="text/javascript">function bindSubCategory(subCategory) {
         var categoryID = $('#CategoryID').val()
         $.ajax({
             url: "/Bind/BindSubCategory",
@@ -38,26 +37,25 @@
                 $('#ProductId').val(product.ProductId)
                 $('#ProductName').val(product.ProductName)
                 $('#ProductDescription').val(product.ProductDescription)
-                $('#ProductSize').val(product.ProductSize)
+                $('#ProductQty').val(product.ProductQty)
                 $('#ProductWeight').val(product.ProductWeight)
                 $('#BasePrice').val(product.BasePrice)
                 $('#ShippingCharges').val(product.ShippingCharges)
                 $('#GST').val(product.GST)
                 $('#ServiceTax').val(product.ServiceTax)
                 $('#FinalPrice').val(product.FinalPrice)
-                //$('#DisplayAtHomePage').val(product.DisplayAtHomePage)
-                //$('#IsActive').val(product.IsActive)
-                if (product.DisplayAtHomePage)
-                    $('#DisplayAtHomePage').prop("checked")
+                $('#DisplayAtHomePage').val(product.DisplayAtHomePage)
+                $('#IsActive').val(product.IsActive)
 
-                if (product.IsActive)
-                    $('#IsActive').prop("checked")
-                debugger;
+
                 // load product image data table
                 if (product.productImages.length > 0) {
                     productsImages = product.productImages
-                    loadProductImagesDataTable();
                 }
+                else
+                    productsImages = []
+                loadProductImagesDataTable();
+
 
             }
         });
@@ -72,21 +70,17 @@
             data: { 'ProductImageID': productImageId },
             datatype: "json",
             success: function (data) {
-                debugger;
-                console.log(data)
-
                 //$('#CategoryID').val(product.subCategory.category.CategoryID)
                 //bindSubCategory(product.subCategory.SubCategoryID)
                 ////  $('#SubCategoryID').val(product.subCategory.SubCategoryID)
                 $('#ProductImageID').val(data.productImage.ProductImageID)
                 $('#Caption').val(data.productImage.Caption)
-                $('#productImagePath').val(data.productImage.productImagePath)
+                $('#ProductImagePath').val(data.productImage.ProductImagePath)
                 $('#ImagePriority').val(data.productImage.Priority)
-                //if (product.DisplayAtHomePage)
-                //    $('#DisplayAtHomePage').prop("checked")
 
-                if (data.productImage.IsActive)
-                    $('#IsActiveImage').prop("checked")
+                $('#DisplayImageAtHomePage').val(data.productImage.IsActive)
+
+                $('#IsActiveImage').val(data.productImage.IsActive)
                 //debugger;
                 //// load product image data table
                 //if (product.productImages.length > 0) {
@@ -99,26 +93,31 @@
     }
 
     function loadProductImagesDataTable() {
+
         $('#tblProductImages').DataTable({
-            "destroy": true,
             "ordering": true,
             "bJQueryUI": true,
             "sPaginationType": "full_numbers",
             "sDom": '<""l>t<"F"fp>',
-            "data": productsImages,
+            "aaData": productsImages,
             "searching": true,
-            "columns": [
-                { 'data': 'ProductImageID', "name": "ProductImageID" },
-                { 'data': 'Caption', "name": "Caption" },
-                { 'data': 'Priority', "name": "Priority" },
-                { 'data': 'IsActive', "name": "IsActive" },
+            "bDestroy":true,
+            "aoColumns": [
+                { 'mData': 'ProductImageID', "name": "ProductImageID" },
+                { 'mData': 'Caption', "name": "Caption" },
+                { 'mData': 'Priority', "name": "Priority" },
+                { 'mData': 'IsActive', "name": "IsActive" },
+                { 'mData': 'DisplayAtHomePage', "name": "DisplayAtHomePage" },
                 {
-                    "render": function (data, type, obj, meta) {
-                        return `<img src='` + obj.productImagePath + `' class="span3"  >`;
+                    'mData': null,
+                    "mRender": function (data, type, obj) {
+                        console.log(obj.ProductImagePath )
+                        return `<img src='` + obj.ProductImagePath + `' class="span3"  >`;
                     }
                 },
                 {
-                    "render": function (data, type, obj, meta) {
+                    'mData': null,
+                    "mRender": function (data, type, obj) {
                         return `<a class="btn btn-primary" href="#" onclick="javascript:editProductImage(event,'` + obj.ProductImageID + `')">Edit</a>
 
                             `;
@@ -145,12 +144,14 @@
 
         var objArr = [];
 
-        formdata.append("Caption", $('#Caption').val());
-        formdata.append("Priority", $('#ImagePriority').val());
-        formdata.append("IsActive", $('#IsActiveImage').prop('checked') ? true : false)
+        formdata.append("Caption", $('#Caption').val())
+        formdata.append("Priority", $('#ImagePriority').val())
+        formdata.append("IsActive", $('#IsActiveImage').val())
         formdata.append("ProductID", $('#ProductId').val())
         formdata.append("ProductImageID", $('#ProductImageID').val())
-        formdata.append("productImagePath", $('#productImagePath').val())
+        formdata.append("ProductImagePath", $('#ProductImagePath').val())
+        formdata.append("DisplayAtHomePage", $('#DisplayImageAtHomePage').val())
+
         //JSON obj
         formdata.append('objArr', objArr);
 
@@ -172,6 +173,7 @@
 
 
     }
+
     $(document).ready(function () {
         //bindSubCategory($('#CategoryID'));
         $('#btnSaveImage').click(function (e) {
@@ -193,35 +195,37 @@
 
         function loadProductsDataTable() {
             $('#tblProducts').DataTable({
-                "destroy": true,
                 "ordering": true,
-                //"bJQueryUI": true,
-                //"sPaginationType": "full_numbers",
-                //"sDom": '<""l>t<"F"fp>',
-                "scrollX": true,
-                "PaginationType": "full",
+                "bJQueryUI": true,
+                "sPaginationType": "full_numbers",
+                "sDom": '<""l>t<"F"fp>',
                 "scrollCollapse": true,
-                "data": productsData.products,
+                "aaData": productsData.products,
                 "searching": true,
                 "fixedColumns": {
                     "rightColumns": 1
                 },
                 "dom": "Blfrtip",
-                "columns": [
-                    { 'data': 'ProductId', "name": "ProductId" },
-                    { 'data': 'ProductName', "name": "ProductName" },
-                    { 'data': 'ProductDescription', "name": "ProductDescription" },
-                    { 'data': 'ProductSize', "name": "ProductSize" },
-                    { 'data': 'ProductWeight', "name": "ProductWeight" },
-                    { 'data': 'BasePrice', "name": "BasePrice" },
-                    { 'data': 'ShippingCharges', "name": "ShippingCharges" },
-                    { 'data': 'GST', "name": "GST" },
-                    { 'data': 'ServiceTax', "name": "ServiceTax" },
-                    { 'data': 'FinalPrice', "name": "FinalPrice" },
-                    { 'data': 'DisplayAtHomePage', "name": "DisplayAtHomePage" },
-                    { 'data': 'IsActive', "name": "IsActive" },
+                //"bFilter":true,
+                //"bProcessing": true,
+                "aLengthMenu": [[10, 20, 50, 100, -1], [10, 20, 50, 100, "All"]],
+                "iDisplayLength": 10,
+                "aoColumns": [
+                    { 'mData': 'ProductId', "name": "ProductId" },
+                    { 'mData': 'ProductName', "name": "ProductName" },
+                    { 'mData': 'ProductDescription', "name": "ProductDescription" },
+                    { 'mData': 'ProductQty', "name": "ProductQty" },
+                    { 'mData': 'ProductWeight', "name": "ProductWeight" },
+                    { 'mData': 'BasePrice', "name": "BasePrice" },
+                    { 'mData': 'ShippingCharges', "name": "ShippingCharges" },
+                    { 'mData': 'GST', "name": "GST" },
+                    { 'mData': 'ServiceTax', "name": "ServiceTax" },
+                    { 'mData': 'FinalPrice', "name": "FinalPrice" },
+                    { 'mData': 'DisplayAtHomePage', "name": "DisplayAtHomePage" },
+                    { 'mData': 'IsActive', "name": "IsActive" },
                     {
-                        "render": function (data, type, obj, meta) {
+                        'mData': null,
+                        "mRender": function (data, type, obj) {
                             return `<a class="btn btn-primary" href="#" onclick="javascript:editProduct(event,'` + obj.ProductId + `')">Edit</a>
 
                             `;
@@ -233,8 +237,20 @@
         }
         //<a class="btn btn-danger" href="#" onclick="javascript:deleteCategory(event,'` + obj.ID + `')">Delete</a>
         //  <a class="btn btn-danger" href="#" onclick="javascript:deleteCategory(event,'` + obj.ProductID + `')">Delete</a>
-    })
-</script>
+    })</script>
+<div class="widget-content">
+    <a href="#myModal" data-toggle="modal" class="btn btn-success">View Popup</a>
+    <div id="myModal" class="modal hide">
+        <div class="modal-header">
+            <button data-dismiss="modal" class="close" type="button">×</button>
+            <h3>Pop up Header</h3>
+        </div>
+        <div class="modal-body">
+            <p>Here is the text coming you can put also image if you want…</p>
+        </div>
+    </div>
+</div>
+
 <div class="container-fluid">
     <div class="row-fluid">
         <div class="span12">
@@ -273,9 +289,9 @@
                             </div>
                         </div>
                         <div class="control-group span5">
-                            <label class="control-label">Product Size:</label>
+                            <label class="control-label">Product Qty:</label>
                             <div class="controls">
-                                @Html.TextBoxFor(a => a.ProductSize, new { @maxlength = "100" })
+                                @Html.TextBoxFor(a => a.ProductQty, new { @maxlength = "100" })
                             </div>
                         </div>
                         <div class="control-group span5">
@@ -287,43 +303,63 @@
                         <div class="control-group span5">
                             <label class="control-label">Base Price:</label>
                             <div class="controls">
-                                @Html.TextBoxFor(a => a.BasePrice, new { @maxlength = "100" })
+                                <div class="input-prepend">
+                                    <span class="add-on">₹</span>
+                                    @Html.TextBoxFor(a => a.BasePrice, new { @maxlength = "100", @onKeypress = "return OnlyDecimals(event)", @class = "span11" })
+                                </div>
+
                             </div>
                         </div>
                         <div class="control-group span5">
                             <label class="control-label">Shipping Charges:</label>
                             <div class="controls">
-                                @Html.TextBoxFor(a => a.ShippingCharges, new { @maxlength = "100" })
+                                <div class="input-prepend">
+                                    <span class="add-on">₹</span>
+                                    @Html.TextBoxFor(a => a.ShippingCharges, new { @maxlength = "100", @onKeypress = "return OnlyDecimals(event)", @class = "span11" })
+                                </div>
                             </div>
                         </div>
                         <div class="control-group span5">
                             <label class="control-label">GST :</label>
                             <div class="controls">
-                                @Html.TextBoxFor(a => a.GST, new { @maxlength = "100" })
+                                <div class="input-append">
+
+                                    @Html.TextBoxFor(a => a.GST, new { @maxlength = "100", @onKeypress = "return OnlyDecimals(event)", @class = "span11" })
+                                    <span class="add-on">%</span>
+                                </div>
                             </div>
                         </div>
                         <div class="control-group span5">
                             <label class="control-label">Service Tax:</label>
                             <div class="controls">
-                                @Html.TextBoxFor(a => a.ServiceTax, new { @maxlength = "100" })
+                                <div class="input-append">
+
+                                    @Html.TextBoxFor(a => a.ServiceTax, new { @maxlength = "100", @onKeypress = "return OnlyDecimals(event)", @class = "span11" })
+                                    <span class="add-on">%</span>
+                                </div>
                             </div>
                         </div>
                         <div class="control-group span5">
                             <label class="control-label">Final Price:</label>
                             <div class="controls">
-                                @Html.TextBoxFor(a => a.FinalPrice, new { @maxlength = "100" })
+                                <div class="input-append">
+                                    <span class="add-on">₹</span>
+                                    @Html.TextBoxFor(a => a.FinalPrice, new { @maxlength = "100", @onKeypress = "return OnlyDecimals(event)", @class = "span11" })
+                                </div>
                             </div>
                         </div>
                         <div class="control-group span5">
                             <label class="control-label">Display at Home Page :</label>
                             <div class="controls">
-                                @Html.CheckBoxFor(a => a.DisplayAtHomePage)
+                                @Html.DropDownListFor(a => a.DisplayAtHomePage, ECommApplication.Common.CommonFunctions.SelectListYesNo(), "--Select--")
+                                @Html.ValidationMessageFor(a => a.DisplayAtHomePage, "", new { @class = "help-inline" })
                             </div>
                         </div>
                         <div class="control-group span7">
                             <label class="control-label">Is Active :</label>
                             <div class="controls">
-                                @Html.CheckBoxFor(a => a.IsActive)
+                                @Html.DropDownListFor(a => a.IsActive, ECommApplication.Common.CommonFunctions.SelectListYesNo(), "--Select--")
+                                @Html.ValidationMessageFor(a => a.IsActive, "", new { @class = "help-inline" })
                             </div>
                         </div>
                         <div class="widget-box">
@@ -342,7 +378,7 @@
                                     <label class="control-label">Caption :</label>
                                     <div class="controls">
                                         <input type="hidden" id="ProductImageID" />
-                                        <input type="hidden" id="productImagePath" />
+                                        <input type="hidden" id="ProductImagePath" />
                                         <input type="text" id="Caption" name="Caption" />
                                     </div>
                                 </div>
@@ -355,7 +391,23 @@
                                 <div class="control-group">
                                     <label class="control-label">Is Active :</label>
                                     <div class="controls">
-                                        <input type="checkbox" id="IsActiveImage" name="IsActiveImage" />
+                                        @*<input type="checkbox" id="IsActiveImage" name="IsActiveImage" />*@
+                                        <select id="IsActiveImage" name="IsActiveImage">
+                                            <option value="">--Select--</option>
+                                            <option value="Yes">Yes</option>
+                                            <option value="No">No</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label">Display at Home Page :</label>
+                                    <div class="controls">
+                                        @*<input type="checkbox" id="DisplayAtHomePage" name="DisplayAtHomePage" />*@
+                                        <select id="DisplayImageAtHomePage" name="DisplayImageAtHomePage">
+                                            <option value="">--Select--</option>
+                                            <option value="Yes">Yes</option>
+                                            <option value="No">No</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="form-actions">
@@ -375,6 +427,7 @@
                                                     <th width="30%">Caption</th>
                                                     <th width="10%">Priority</th>
                                                     <th width="10%">Active</th>
+                                                    <th width="10%">Display at Home Page</th>
                                                     <th width="35%">Image</th>
                                                     <th width="20%"></th>
                                                 </tr>
@@ -407,7 +460,7 @@
                                     <th width="20px">Product ID</th>
                                     <th width="300px">Product Name</th>
                                     <th width="300px">Product Description</th>
-                                    <th width="20px">Product Size</th>
+                                    <th width="20px">Product Qty</th>
                                     <th width="20px">Product Weight</th>
                                     <th width="20px">Base Price</th>
                                     <th width="20px">Shipping Charges</th>

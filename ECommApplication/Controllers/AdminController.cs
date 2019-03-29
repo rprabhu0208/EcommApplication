@@ -13,6 +13,7 @@ using System.Xml.Serialization;
 
 namespace ECommApplication.Controllers
 {
+
     [AuthAttribute]
     public class AdminController : Controller
     {
@@ -33,7 +34,7 @@ namespace ECommApplication.Controllers
         [HttpGet]
         public ActionResult Category(string id)
         {
-            Category category = null;
+            Category category = new Category();
             //if (Request.IsAjaxRequest())
             //{
             //    if(Request.QueryString["CategoryId"] != null)
@@ -43,13 +44,14 @@ namespace ECommApplication.Controllers
             //    }
             //}
 
-            return View();
+            return View(category);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Category(Category CA)
         {
+            //ModelState.Remove("IsActive");
             if (ModelState.IsValid)
             {
                 int i = OC.Category(CA);
@@ -129,7 +131,7 @@ namespace ECommApplication.Controllers
         [HttpGet]
         public ActionResult Product(string id)
         {
-            Product product = null;
+
             if (Request.IsAjaxRequest())
             {
                 //if (Request.QueryString["SubCategoryId"] != null)
@@ -149,6 +151,9 @@ namespace ECommApplication.Controllers
             ModelState.Remove("subCategory.category.CategoryName");
             ModelState.Remove("subCategory.SubCategoryName");
             ModelState.Remove("subCategory.CategoryID");
+            ModelState.Remove("subCategory.category.IsActive");
+            ModelState.Remove("subCategory.IsActive");
+
             if (ModelState.IsValid)
             {
                 if (Session["productImages"] != null)
@@ -201,7 +206,7 @@ namespace ECommApplication.Controllers
                         // Get the complete folder path and store the file inside it.  
                         // fname = Path.Combine(Server.MapPath("~/TempFiles/"), fname);
                         // file.SaveAs(fname);
-                        prodImage.productImagePath = "/TempFiles/" + fname;
+                        prodImage.ProductImagePath = "/TempFiles/" + fname;
                     }
 
                 }
@@ -212,8 +217,9 @@ namespace ECommApplication.Controllers
                         .Select(S => {
                             S.Caption = prodImage.Caption;
                             S.IsActive = prodImage.IsActive;
-                            S.productImagePath = prodImage.productImagePath;
+                            S.ProductImagePath = prodImage.ProductImagePath;
                             S.Priority = prodImage.Priority;
+                            S.DisplayAtHomePage = prodImage.DisplayAtHomePage;
                             return S;
                         }).ToList();
                 }

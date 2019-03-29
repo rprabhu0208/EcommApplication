@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 using System.Xml.Serialization;
 
 namespace ECommApplication.Common
@@ -10,7 +11,7 @@ namespace ECommApplication.Common
     public static class CommonFunctions
     {
 
-        public static string convertObjectListToXML<T>(List<T> obj) 
+        public static string ConvertObjectListToXML<T>(List<T> obj) 
         { 
              string xmlObj = "";
             // Returns message that successfully uploaded  
@@ -26,6 +27,17 @@ namespace ECommApplication.Common
 
             }
             return xmlObj;
+        }
+
+
+        public static List<SelectListItem> SelectListYesNo()
+        {
+            List<SelectListItem> lstSelectListItems = new List<SelectListItem>();
+
+            lstSelectListItems.Add(new SelectListItem() { Text = "Yes", Value = "Yes" });
+            lstSelectListItems.Add(new SelectListItem() { Text = "No", Value = "No" });
+
+            return lstSelectListItems;
         }
     }
 }
